@@ -1,0 +1,36 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  pagopa-aws-lambda-template
+
+Resources:
+  TestFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ../src/
+      Handler: app.handler
+      Runtime: nodejs18.x
+      Architectures: # uncomment this if you wanna execute in M1 chip 
+        - arm64 
+      FunctionUrlConfig:
+        AuthType: NONE
+        Cors:
+          AllowOrigins:
+            - "*"
+          AllowHeaders:
+            - "*"
+          AllowMethods:
+            - "*"
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - app.ts
+
+Outputs:
+  TestURLEndpoint:
+    Description: Test URL
+    Value: !GetAtt TestFunctionUrl.FunctionUrl

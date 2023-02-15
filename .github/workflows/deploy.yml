@@ -1,0 +1,60 @@
+name: Deploy new generated image 
+
+on:
+  workflow_dispatch:
+  #push:
+  #  branches: [ "main" ]
+
+env:
+  AWS_REGION: eu-south-1  
+  ECR_REPOSITORY: pagopadlambdatemplate
+
+  
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    environment: dev
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3        
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@master
+      with:
+        role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Build, tag, and push image to Amazon ECR
+      id: build-image
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+      run: |
+        # Build a docker container and
+        # push it to ECR so that it can
+        # be deployed to ECS.
+        VERSION=$(grep '"version"' package.json | cut -d '"' -f 4 | head -n 1)
+        cd docker
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$VERSION .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$VERSION
+        echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$VERSION" >> $GITHUB_OUTPUT
+        docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$VERSION $ECR_REGISTRY/$ECR_REPOSITORY:latest
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+        echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:latest" >> $GITHUB_OUTPUT
+    
+    - name: Trigger Terraform apply in pagopa-aws-infra
+      run: |
+          curl -X POST https://api.github.com/repos/pagopa/pagopa-aws-infra/dispatches \
+          -H 'Accept: application/vnd.github.everest-preview+json' \
+          -u ${{ secrets.ACTIONS_KEY }} \
+          -d '{"event_type":"terraform-apply-dispatched","client_payload":{"environment":"dev", "domain":"lambdatemplate"}}'
+      

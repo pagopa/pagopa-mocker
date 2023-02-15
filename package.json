@@ -1,0 +1,31 @@
+{
+    "name": "pagopa-aws-lambda-template",
+    "version": "0.0.1",
+    "description": "A template for AWS Lambda functions in TypeScript language",
+    "repository": "https://github.com/pagopa/pagopa-aws-lambda-template",
+    "author": "https://pagopa.gov.it",
+    "license": "MIT",
+    "scripts": {
+        "prebuild": "rimraf dist",
+        "build": "tsc",
+        "postversion": "git push && git push --tags",
+        "rimraf": "./node_modules/rimraf/bin.js",
+        "lint": "eslint . -c .eslintrc.js --ext .ts,.tsx",
+        "test": "jest",
+        "test:coverage": "jest --coverage --runInBand --ci"
+    },
+    "devDependencies": {
+        "@pagopa/eslint-config": "^1.3.1",
+        "@types/aws-lambda": "^8.10.92",
+        "@types/jest": "^27.4.0",
+        "@types/node": "^18.11.18",
+        "eslint-plugin-prettier": "^3.1.1",
+        "jest": "^29.4.2",
+        "jest-sonar": "^0.2.15",
+        "prettier": "^2.7.1",
+        "ts-jest": "^29.0.5",
+        "tslint": "^6.1.3",
+        "typescript": "^4.9.0"
+    },
+    "dependencies": {}
+}
