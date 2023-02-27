@@ -10,6 +10,8 @@ Resources:
       CodeUri: ../src/
       Handler: app.handler
       Runtime: nodejs18.x
+      MemorySize: 512
+      Timeout: 5
       Architectures: # uncomment this if you wanna execute in M1 chip 
         - arm64 
       FunctionUrlConfig:
