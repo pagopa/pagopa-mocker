@@ -6,7 +6,7 @@ on:
   #  branches: [ "main" ]
 
 env:
-  AWS_REGION: eu-west-1  
+  AWS_REGION: eu-south-1  
   ECR_REPOSITORY: pagopadmocker
 
   
