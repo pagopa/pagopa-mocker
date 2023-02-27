@@ -7,6 +7,7 @@ COPY src src/
 RUN npm install --legacy-peer-deps
 RUN npm install -g rimraf
 RUN npm run build
+RUN npm uninstall aws-sdk
 
 FROM --platform=linux/amd64 public.ecr.aws/lambda/nodejs:18
 WORKDIR ${LAMBDA_TASK_ROOT}
