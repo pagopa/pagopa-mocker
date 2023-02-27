@@ -18,8 +18,8 @@ const getDocumentClientOptions = (): any => {
     };
   } else {
     result = {
-      endpoint: process.env.DYNAMODB_ENDPOINT,
-      region: process.env.DYNAMODB_REGION,
+      // endpoint: process.env.DYNAMODB_ENDPOINT,
+      region: "eu-west-1", // process.env.DYNAMODB_REGION,
     };
   }
   return result;
