@@ -43,7 +43,6 @@ jobs:
         # push it to ECR so that it can
         # be deployed to ECS.
         VERSION=$(grep '"version"' package.json | cut -d '"' -f 4 | head -n 1)
-        cd docker
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$VERSION .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$VERSION
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$VERSION" >> $GITHUB_OUTPUT
