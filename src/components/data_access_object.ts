@@ -19,7 +19,7 @@ const getDocumentClientOptions = (): any => {
   } else {
     result = {
       // endpoint: process.env.DYNAMODB_ENDPOINT,
-      region: "eu-west-1", // process.env.DYNAMODB_REGION,
+      region: "eu-south-1", // process.env.DYNAMODB_REGION,
     };
   }
   return result;
