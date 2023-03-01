@@ -17,7 +17,7 @@ import { NotCompliantRequestError } from "../types/exceptions/not_compliant_requ
 import * as utility from "./utility";
 import {
   decodeBase64,
-  encodeBase64,
+  // encodeBase64,
   getBodyProperty,
   isNullOrUndefined,
 } from "./utility";
