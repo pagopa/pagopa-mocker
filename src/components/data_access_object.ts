@@ -2,11 +2,9 @@
 /* eslint-disable functional/prefer-readonly-type */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable functional/no-let */
-// import { AWSError, DynamoDB } from "aws-sdk";
+import { AWSError, DynamoDB } from "aws-sdk";
 import { MockResource } from "../model/mock_resource";
 import { NoMockResourceFoundError } from "../types/exceptions/no_mock_resource_found_error";
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { DynamoDB } = require("@aws-sdk/client-dynamodb");
 
 const TABLE_NAME = "pagopamockresource";
 const LOCAL_DYNAMODB_ENDPOINT = "http://pagopamockdb:8000";
@@ -30,7 +28,7 @@ const getDocumentClientOptions = (): any => {
 const getTableName = (): string =>
   process.env.TABLE_NAME === undefined ? TABLE_NAME : process.env.TABLE_NAME;
 
-const handleError = (err: any): void => {
+const handleError = (err: AWSError): void => {
   if (err) {
     throw new Error(`An error occurred while read data. Error: ${err}`);
   }
