@@ -240,6 +240,6 @@ export const getMockResponse = (
   });
   return {
     ...mockRule.response,
-    body: encodeBase64(inBody),
+    body: inBody, // body: encodeBase64(inBody),
   };
 };
