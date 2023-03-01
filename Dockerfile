@@ -4,8 +4,7 @@ COPY package.json  ./
 COPY tsconfig.json  ./
 
 COPY src src/
-RUN npm install --legacy-peer-deps
-RUN npm uninstall aws-sdk
+RUN npm install
 RUN npm install -g rimraf
 RUN npm run build
 
