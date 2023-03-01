@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 public.ecr.aws/lambda/nodejs:18 as builder
+FROM --platform=linux/amd64 public.ecr.aws/lambda/nodejs:16 as builder
 WORKDIR /usr/app/
 COPY package.json  ./
 COPY tsconfig.json  ./
@@ -9,7 +9,7 @@ RUN npm uninstall aws-sdk
 RUN npm install -g rimraf
 RUN npm run build
 
-FROM --platform=linux/amd64 public.ecr.aws/lambda/nodejs:18
+FROM --platform=linux/amd64 public.ecr.aws/lambda/nodejs:16
 WORKDIR ${LAMBDA_TASK_ROOT}
 COPY --from=builder /usr/app/dist/. ./
 CMD ["app.handler"]
