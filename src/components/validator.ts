@@ -211,13 +211,11 @@ export const getUnmarshalledBody = (
   if (body !== null && body !== undefined && body !== "") {
     switch (contentType) {
       case "application/json":
-        unmarshalledBody = JSON.parse(utility.decodeBase64(body));
+        unmarshalledBody = JSON.parse(body);
         break;
       case "text/xml":
       case "application/xml":
-        unmarshalledBody = utility.stringToXMLObject(
-          utility.decodeBase64(body)
-        );
+        unmarshalledBody = utility.stringToXMLObject(body);
         break;
       default:
         unmarshalledBody = body;
