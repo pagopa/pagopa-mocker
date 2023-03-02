@@ -3,7 +3,6 @@
 /* eslint-disable object-shorthand */
 import { APIGatewayProxyResult } from "aws-lambda";
 import { HeaderWrapper } from "../types/definitions";
-import { encodeBase64 } from "./utility";
 
 export const buildErrorResponse = (
   error: Error,
@@ -28,7 +27,7 @@ const getDefaultMessageByContentType = (
   else if (responseType === "text/xml" || responseType === "application/xml") {
     body = `<response><outcome>KO</outcome><message>${message}</message></response>`;
   }
-  return encodeBase64(body);
+  return body;
 };
 
 export const buildResponse = (

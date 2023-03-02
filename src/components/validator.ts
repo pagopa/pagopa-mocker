@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-use-before-define */
 /* eslint-disable functional/no-let */
@@ -15,12 +16,7 @@ import {
 import { InvalidMockConfigurationError } from "../types/exceptions/invalid_mock_configuration_error";
 import { NotCompliantRequestError } from "../types/exceptions/not_compliant_request_error";
 import * as utility from "./utility";
-import {
-  decodeBase64,
-  // encodeBase64,
-  getBodyProperty,
-  isNullOrUndefined,
-} from "./utility";
+import { decodeBase64, getBodyProperty, isNullOrUndefined } from "./utility";
 
 export const getValidMockRule = (
   mockResource: MockResource,
@@ -35,14 +31,18 @@ export const getValidMockRule = (
   while (canContinueRuleValidation(isRuleFound, ruleIndex, numberOfMockRules)) {
     const mockRule = mockRules[ruleIndex];
     if (mockRule.isActive) {
+      console.debug(
+        `Analyzing the mock rule [${mockRule.id}: ${mockRule.name}]`
+      );
       const mockConditions = mockRule.conditions;
       const numberOfMockConditions = mockConditions.length;
       let isRuleStillValid = true;
       let conditionIndex = 0;
       // eslint-disable-next-line prettier/prettier
       while (canContinueValidationForRemainingConditions(isRuleStillValid, conditionIndex, numberOfMockConditions)) {
+        const mockCondition = mockConditions[conditionIndex];
         isRuleStillValid = evaluateMockCondition(
-          mockConditions[conditionIndex],
+          mockCondition,
           request,
           unmarshalledBody
         );
@@ -71,7 +71,6 @@ const evaluateMockCondition = (
     case RuleFieldPosition.BODY:
       isValid = isBodyRequestSatisfyingRequirements(
         mockCondition,
-        request,
         unmarshalledBody
       );
       break;
@@ -101,12 +100,13 @@ const canContinueValidationForRemainingConditions = (
 
 const isBodyRequestSatisfyingRequirements = (
   mockCondition: MockCondition,
-  request: APIGatewayEvent,
   unmarshalledBody: any
 ): boolean => {
+  console.debug(
+    `Evaluating the mock condition: [${mockCondition.id}: ${mockCondition.fieldName} ${mockCondition.conditionType} ${mockCondition.conditionValue}].`
+  );
   let isValid = false;
-  const content: string | null = request.body;
-  if (!isNullOrUndefined(content) && !isNullOrUndefined(unmarshalledBody)) {
+  if (!isNullOrUndefined(unmarshalledBody)) {
     switch (mockCondition.analyzedContentType) {
       case ContentType.JSON:
       case ContentType.XML:
@@ -114,7 +114,7 @@ const isBodyRequestSatisfyingRequirements = (
         break;
       case ContentType.STRING:
         isValid = isContentCompliantToCondition(
-          content,
+          unmarshalledBody,
           mockCondition.conditionValue,
           mockCondition.conditionType
         );
@@ -140,6 +140,9 @@ const areHeadersSatisfyingRequirements = (
   const conditionType = mockCondition.conditionType;
   const conditionValue = mockCondition.conditionValue;
   const headerValue = request.headers?.[mockCondition.fieldName];
+  console.debug(
+    `Evaluating the mock condition for header: [${mockCondition.id}: ${headerValue} ${conditionType} ${conditionValue}].`
+  );
   return headerValue !== undefined
     ? isContentCompliantToCondition(headerValue, conditionValue, conditionType)
     : false;
@@ -168,7 +171,7 @@ const isContentCompliantToCondition = (
   if (fieldValue !== undefined) {
     switch (conditionType) {
       case ConditionType.REGEX:
-        isValid = new RegExp(conditionValue).test(fieldValue);
+        isValid = new RegExp(conditionValue, "g").test(fieldValue);
         break;
       case ConditionType.EQ:
         if (typeof fieldValue === "number") {
@@ -194,6 +197,9 @@ const isContentCompliantToCondition = (
         break;
     }
   }
+  console.debug(
+    `Evaluated the mock condition for value [${fieldValue}]. Is compliant to this condition= ${isValid}.`
+  );
   return isValid;
 };
 
@@ -217,6 +223,9 @@ export const getUnmarshalledBody = (
         unmarshalledBody = body;
     }
   }
+  console.debug(
+    `The request body extracted and unmarshalled as [${contentType}] content type is the following: [${unmarshalledBody}].`
+  );
   return unmarshalledBody;
 };
 
@@ -226,20 +235,23 @@ export const getMockResponse = (
   unmarshalledRequestBody: any
 ): MockResponse => {
   const parameters = mockRule.response.parameters;
-  let inBody = decodeBase64(mockRule.response.body);
+  let decodedBody = decodeBase64(mockRule.response.body);
   parameters?.forEach((parameter) => {
     const placeholder = new RegExp(
       "\\$\\{" + `${parameter.replace(/\./g, "\\.")}` + "\\}",
       "g"
     );
     const parameterValue = getBodyProperty(unmarshalledRequestBody, parameter);
-    inBody = inBody.replace(
+    decodedBody = decodedBody.replace(
       placeholder,
       parameterValue === undefined ? "" : parameterValue
     );
   });
+  console.debug(
+    `Extracted the following request body from mock rule: [${decodedBody}].`
+  );
   return {
     ...mockRule.response,
-    body: inBody, // body: encodeBase64(inBody),
+    body: decodedBody,
   };
 };
