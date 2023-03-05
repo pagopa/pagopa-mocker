@@ -7,7 +7,7 @@ on:
 
 env:
   AWS_REGION: eu-south-1  
-  ECR_REPOSITORY: pagopadlambdatemplate
+  ECR_REPOSITORY: pagopadmocker
 
   
 permissions:
@@ -43,7 +43,6 @@ jobs:
         # push it to ECR so that it can
         # be deployed to ECS.
         VERSION=$(grep '"version"' package.json | cut -d '"' -f 4 | head -n 1)
-        cd docker
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$VERSION .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$VERSION
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$VERSION" >> $GITHUB_OUTPUT
@@ -51,10 +50,10 @@ jobs:
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:latest" >> $GITHUB_OUTPUT
     
-    - name: Trigger Terraform apply in pagopa-aws-infra
-      run: |
-          curl -X POST https://api.github.com/repos/pagopa/pagopa-aws-infra/dispatches \
-          -H 'Accept: application/vnd.github.everest-preview+json' \
-          -u ${{ secrets.ACTIONS_KEY }} \
-          -d '{"event_type":"terraform-apply-dispatched","client_payload":{"environment":"dev", "domain":"lambdatemplate"}}'
+    # - name: Trigger Terraform apply in pagopa-aws-infra
+    #   run: |
+    #       curl -X POST https://api.github.com/repos/pagopa/pagopa-aws-infra/dispatches \
+    #       -H 'Accept: application/vnd.github.everest-preview+json' \
+    #       -u ${{ secrets.ACTIONS_KEY }} \
+    #       -d '{"event_type":"terraform-apply-dispatched","client_payload":{"environment":"dev", "domain":"lambdatemplate"}}'
       

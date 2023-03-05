@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable functional/immutable-data */
 /* eslint-disable functional/prefer-readonly-type */
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -18,8 +19,8 @@ const getDocumentClientOptions = (): any => {
     };
   } else {
     result = {
-      endpoint: process.env.DYNAMODB_ENDPOINT,
-      region: process.env.DYNAMODB_REGION,
+      // endpoint: process.env.DYNAMODB_ENDPOINT,
+      region: "eu-south-1", // process.env.DYNAMODB_REGION,
     };
   }
   return result;
@@ -38,13 +39,17 @@ export const readMockResource = async (
   resourceId: string
 ): Promise<MockResource> => {
   let result;
+  const tableName = getTableName();
   try {
     const parameters = {
       Key: {
         id: resourceId,
       },
-      TableName: getTableName(),
+      TableName: tableName,
     };
+    console.debug(
+      `Start search of mock resource with id=[${resourceId}] on table [${tableName}].`
+    );
     const database = new DynamoDB.DocumentClient(getDocumentClientOptions());
     result = await database.get(parameters).promise();
   } catch (err) {
@@ -54,5 +59,6 @@ export const readMockResource = async (
   if (item === undefined) {
     throw new NoMockResourceFoundError(resourceId);
   }
+  console.debug(`Found mock resource with id=[${resourceId}].`);
   return item;
 };

@@ -6,7 +6,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const xml2js = require("xml2js");
+// const xml2js = require("xml2js");
+import * as xml2js from "xml2js";
 const xml2jsOptions = {
   explicitArray: false,
   tagNameProcessors: [xml2js.processors.stripPrefix],
