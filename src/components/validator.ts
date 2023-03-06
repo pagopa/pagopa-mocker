@@ -203,6 +203,12 @@ const isContentCompliantToCondition = (
       case ConditionType.LT:
         isValid = Number(fieldValue) < Number(conditionValue);
         break;
+      case ConditionType.NULL:
+        isValid = isNullOrUndefined(fieldValue);
+        break;
+      case ConditionType.ANY:
+        isValid = !isNullOrUndefined(fieldValue);
+        break;
       default:
         break;
     }
