@@ -129,9 +129,19 @@ const isBodyRequestSatisfyingRequirements = (
 };
 
 const isURLSatisfyingRequirements = (
-  _mockCondition: MockCondition,
-  _request: APIGatewayEvent
-): boolean => true;
+  mockCondition: MockCondition,
+  request: APIGatewayEvent
+): boolean => {
+  const conditionType = mockCondition.conditionType;
+  const conditionValue = mockCondition.conditionValue;
+  const urlValue = request.queryStringParameters?.[mockCondition.fieldName];
+  console.debug(
+    `Evaluating the mock condition for query parameter: [${mockCondition.id}: ${urlValue} ${conditionType} ${conditionValue}].`
+  );
+  return urlValue !== undefined
+    ? isContentCompliantToCondition(urlValue, conditionValue, conditionType)
+    : false;
+};
 
 const areHeadersSatisfyingRequirements = (
   mockCondition: MockCondition,
