@@ -180,25 +180,26 @@ const isContentCompliantToCondition = (
   let isValid = false;
   switch (conditionType) {
     case ConditionType.REGEX:
-      isValid = validateRegexCondition(fieldValue, conditionType);
+      isValid = validateRegexCondition(fieldValue, conditionValue);
       break;
     case ConditionType.EQ:
-      isValid = validateEqualsCondition(fieldValue, conditionType);
+      isValid = validateEqualsCondition(fieldValue, conditionValue);
       break;
     case ConditionType.NEQ:
-      isValid = validateNotEqualsCondition(fieldValue, conditionType);
+      isValid = validateNotEqualsCondition(fieldValue, conditionValue);
       break;
     case ConditionType.GT:
-      isValid = validateGreaterThanCondition(fieldValue, conditionType);
+      isValid = validateGreaterThanCondition(fieldValue, conditionValue);
       break;
     case ConditionType.LT:
-      isValid = validateLowerThanCondition(fieldValue, conditionType);
+      isValid = validateLowerThanCondition(fieldValue, conditionValue);
       break;
     case ConditionType.GE:
-      isValid = validateGreaterOrEqualsThanCondition(fieldValue, conditionType);
+      // eslint-disable-next-line prettier/prettier
+      isValid = validateGreaterOrEqualsThanCondition(fieldValue, conditionValue);
       break;
     case ConditionType.LE:
-      isValid = validateLowerOrEqualsThanCondition(fieldValue, conditionType);
+      isValid = validateLowerOrEqualsThanCondition(fieldValue, conditionValue);
       break;
     case ConditionType.NULL:
       isValid = isNullOrUndefined(fieldValue);
