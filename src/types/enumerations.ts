@@ -25,6 +25,8 @@ export enum ConditionType {
   NEQ = "NEQ",
   LT = "LT",
   GT = "GT",
+  LE = "LE",
+  GE = "GE",
   NULL = "NULL",
   ANY = "ANY",
 }
