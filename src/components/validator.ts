@@ -129,9 +129,17 @@ const isBodyRequestSatisfyingRequirements = (
 };
 
 const isURLSatisfyingRequirements = (
-  _mockCondition: MockCondition,
-  _request: APIGatewayEvent
-): boolean => true;
+  mockCondition: MockCondition,
+  request: APIGatewayEvent
+): boolean => {
+  const conditionType = mockCondition.conditionType;
+  const conditionValue = mockCondition.conditionValue;
+  const urlValue = request.queryStringParameters?.[mockCondition.fieldName];
+  console.debug(
+    `Evaluating the mock condition for query parameter: [${mockCondition.id}: ${urlValue} ${conditionType} ${conditionValue}].`
+  );
+  return isContentCompliantToCondition(urlValue, conditionValue, conditionType);
+};
 
 const areHeadersSatisfyingRequirements = (
   mockCondition: MockCondition,
@@ -143,9 +151,11 @@ const areHeadersSatisfyingRequirements = (
   console.debug(
     `Evaluating the mock condition for header: [${mockCondition.id}: ${headerValue} ${conditionType} ${conditionValue}].`
   );
-  return headerValue !== undefined
-    ? isContentCompliantToCondition(headerValue, conditionValue, conditionType)
-    : false;
+  return isContentCompliantToCondition(
+    headerValue,
+    conditionValue,
+    conditionType
+  );
 };
 
 const isFieldCompliantToCondition = (
@@ -168,34 +178,37 @@ const isContentCompliantToCondition = (
   conditionType: ConditionType
 ): boolean => {
   let isValid = false;
-  if (fieldValue !== undefined) {
-    switch (conditionType) {
-      case ConditionType.REGEX:
-        isValid = new RegExp(conditionValue, "g").test(fieldValue);
-        break;
-      case ConditionType.EQ:
-        if (typeof fieldValue === "number") {
-          isValid = Number(fieldValue) === Number(conditionValue);
-        } else {
-          isValid = fieldValue === conditionValue;
-        }
-        break;
-      case ConditionType.NEQ:
-        if (typeof fieldValue === "number") {
-          isValid = Number(fieldValue) !== Number(conditionValue);
-        } else {
-          isValid = fieldValue !== conditionValue;
-        }
-        break;
-      case ConditionType.GT:
-        isValid = Number(fieldValue) > Number(conditionValue);
-        break;
-      case ConditionType.LT:
-        isValid = Number(fieldValue) < Number(conditionValue);
-        break;
-      default:
-        break;
-    }
+  switch (conditionType) {
+    case ConditionType.REGEX:
+      isValid = validateRegexCondition(fieldValue, conditionValue);
+      break;
+    case ConditionType.EQ:
+      isValid = validateEqualsCondition(fieldValue, conditionValue);
+      break;
+    case ConditionType.NEQ:
+      isValid = validateNotEqualsCondition(fieldValue, conditionValue);
+      break;
+    case ConditionType.GT:
+      isValid = validateGreaterThanCondition(fieldValue, conditionValue);
+      break;
+    case ConditionType.LT:
+      isValid = validateLowerThanCondition(fieldValue, conditionValue);
+      break;
+    case ConditionType.GE:
+      // eslint-disable-next-line prettier/prettier
+      isValid = validateGreaterOrEqualsThanCondition(fieldValue, conditionValue);
+      break;
+    case ConditionType.LE:
+      isValid = validateLowerOrEqualsThanCondition(fieldValue, conditionValue);
+      break;
+    case ConditionType.NULL:
+      isValid = isNullOrUndefined(fieldValue);
+      break;
+    case ConditionType.ANY:
+      isValid = !isNullOrUndefined(fieldValue);
+      break;
+    default:
+      break;
   }
   console.debug(
     `Evaluated the mock condition for value [${fieldValue}]. Is compliant to this condition= ${isValid}.`
@@ -253,3 +266,71 @@ export const getMockResponse = (
     body: decodedBody,
   };
 };
+
+const validateRegexCondition = (
+  fieldValue: any,
+  conditionValue: string
+): boolean =>
+  !isNullOrUndefined(fieldValue)
+    ? new RegExp(conditionValue, "g").test(fieldValue)
+    : false;
+
+const validateEqualsCondition = (
+  fieldValue: any,
+  conditionValue: string
+): boolean => {
+  let isValid = false;
+  if (typeof fieldValue === "number") {
+    // eslint-disable-next-line prettier/prettier
+    isValid = !isNullOrUndefined(fieldValue) ? Number(fieldValue) === Number(conditionValue) : false;
+  } else {
+    isValid = fieldValue === conditionValue;
+  }
+  return isValid;
+};
+
+const validateNotEqualsCondition = (
+  fieldValue: any,
+  conditionValue: string
+): boolean => {
+  let isValid = false;
+  if (typeof fieldValue === "number") {
+    // eslint-disable-next-line prettier/prettier
+    isValid = !isNullOrUndefined(fieldValue) ? Number(fieldValue) !== Number(conditionValue) : false;
+  } else {
+    isValid = fieldValue !== conditionValue;
+  }
+  return isValid;
+};
+
+const validateGreaterThanCondition = (
+  fieldValue: any,
+  conditionValue: string
+): boolean =>
+  !isNullOrUndefined(fieldValue)
+    ? Number(fieldValue) > Number(conditionValue)
+    : false;
+
+const validateLowerThanCondition = (
+  fieldValue: any,
+  conditionValue: string
+): boolean =>
+  !isNullOrUndefined(fieldValue)
+    ? Number(fieldValue) < Number(conditionValue)
+    : false;
+
+const validateGreaterOrEqualsThanCondition = (
+  fieldValue: any,
+  conditionValue: string
+): boolean =>
+  !isNullOrUndefined(fieldValue)
+    ? Number(fieldValue) >= Number(conditionValue)
+    : false;
+
+const validateLowerOrEqualsThanCondition = (
+  fieldValue: any,
+  conditionValue: string
+): boolean =>
+  !isNullOrUndefined(fieldValue)
+    ? Number(fieldValue) <= Number(conditionValue)
+    : false;
