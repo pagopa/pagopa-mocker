@@ -1,8 +1,8 @@
 {
-    "name": "pagopa-aws-lambda-template",
-    "version": "0.0.1",
-    "description": "A template for AWS Lambda functions in TypeScript language",
-    "repository": "https://github.com/pagopa/pagopa-aws-lambda-template",
+    "name": "pagopa-mocker",
+    "version": "0.0.2",
+    "description": "The unified mocking environment for pagoPA platform",
+    "repository": "https://github.com/pagopa/pagopa-mocker",
     "author": "https://pagopa.gov.it",
     "license": "MIT",
     "scripts": {

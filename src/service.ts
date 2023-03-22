@@ -9,39 +9,52 @@ import { HeaderWrapper, RequestBody } from "./types/definitions";
 import { generateId } from "./components/utility";
 import { MockResource } from "./model/mock_resource";
 import { ExtractedData } from "./model/extracted_data";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+// eslint-disable-next-line import/order
+import packageJson from "../../package.json";
 
 export const getMockedResponse = async (
   request: APIGatewayEvent
 ): Promise<APIGatewayProxyResult> => {
   let response: APIGatewayProxyResult;
-  try {
-    const requestData = extractDataFromRequest(request);
-    const mockResource = await readMockResourcesFromDB(requestData);
-    const unmarshalledBody = validator.getUnmarshalledBody(
-      requestData.body,
-      requestData.contentType
-    );
-    const mockRule = validator.getValidMockRule(
-      mockResource,
-      request,
-      unmarshalledBody
-    );
-    const mockResponse = validator.getMockResponse(
-      mockRule,
-      requestData.body,
-      unmarshalledBody
-    );
+  if (request.pathParameters?.proxy === "info") {
+    const headers = { "Content-Type": "application/json" };
     response = builder.buildResponse(
-      mockResponse.status,
-      mockResponse.body,
-      mockResponse.headers
+      200,
+      `{ "version": "${packageJson.version}" }`,
+      headers
     );
-  } catch (error) {
-    console.error(error);
-    response = builder.buildErrorResponse(
-      error,
-      request.headers as HeaderWrapper
-    );
+  } else {
+    try {
+      const requestData = extractDataFromRequest(request);
+      const mockResource = await readMockResourcesFromDB(requestData);
+      const unmarshalledBody = validator.getUnmarshalledBody(
+        requestData.body,
+        requestData.contentType
+      );
+      const mockRule = validator.getValidMockRule(
+        mockResource,
+        request,
+        unmarshalledBody
+      );
+      const mockResponse = validator.getMockResponse(
+        mockRule,
+        requestData.body,
+        unmarshalledBody
+      );
+      response = builder.buildResponse(
+        mockResponse.status,
+        mockResponse.body,
+        mockResponse.headers
+      );
+    } catch (error) {
+      console.error(error);
+      response = builder.buildErrorResponse(
+        error,
+        request.headers as HeaderWrapper
+      );
+    }
   }
   return response;
 };
