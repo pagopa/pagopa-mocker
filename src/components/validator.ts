@@ -147,7 +147,8 @@ const areHeadersSatisfyingRequirements = (
 ): boolean => {
   const conditionType = mockCondition.conditionType;
   const conditionValue = mockCondition.conditionValue;
-  const headerValue = request.headers?.[mockCondition.fieldName];
+  const headers = utility.lowercaseKeys(request.headers);
+  const headerValue = headers?.[mockCondition.fieldName.toLowerCase()];
   console.debug(
     `Evaluating the mock condition for header: [${mockCondition.id}: ${headerValue} ${conditionType} ${conditionValue}].`
   );

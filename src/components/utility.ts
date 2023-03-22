@@ -67,3 +67,10 @@ export const generateId = (resourceUrl: string, httpMethod: string): string => {
   const unescapedId = `${resourceUrl}${httpMethod}`;
   return unescapedId.replace(/[\\/\-_]+/g, "");
 };
+
+export const lowercaseKeys = (obj: any): any =>
+  Object.keys(obj).reduce((acc: any, key: string) => {
+    // eslint-disable-next-line functional/immutable-data
+    acc[key.toLowerCase()] = obj[key];
+    return acc;
+  }, {});
