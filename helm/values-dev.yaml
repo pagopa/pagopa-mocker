@@ -4,7 +4,7 @@ microservice-chart:
   fullnameOverride: ""
   image:
     repository: pagopadcommonacr.azurecr.io/pagopa-mocker
-    tag: "1.0.0"
+    tag: "1.0.1"
     pullPolicy: Always
   livenessProbe:
     httpGet:
@@ -90,4 +90,4 @@ microservice-chart:
   canaryDelivery:
     deployment:
       image:
-        tag: 1.0.0
+        tag: 1.0.1
