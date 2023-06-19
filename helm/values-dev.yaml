@@ -1,0 +1,93 @@
+microservice-chart:
+  namespace: "mocker"
+  nameOverride: ""
+  fullnameOverride: ""
+  image:
+    repository: pagopadcommonacr.azurecr.io/pagopa-mocker
+    tag: "1.0.0"
+    pullPolicy: Always
+  livenessProbe:
+    httpGet:
+      path: /mocker/info
+      port: 8080
+    initialDelaySeconds: 90
+    failureThreshold: 6
+    periodSeconds: 10
+  readinessProbe:
+    httpGet:
+      path: /mocker/info
+      port: 8080
+    initialDelaySeconds: 90
+    failureThreshold: 6
+    periodSeconds: 10
+  deployment:
+    create: true
+  service:
+    create: true
+    type: ClusterIP
+    port: 8080
+  ingress:
+    create: true
+    host: "weudev.mocker.internal.dev.platform.pagopa.it"
+    path: /pagopa-mocker/(.*)
+  serviceAccount:
+    create: false
+    annotations: {}
+    name: ""
+  podAnnotations: {}
+  podSecurityContext:
+    seccompProfile:
+      type: RuntimeDefault
+  securityContext:
+    allowPrivilegeEscalation: false
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "0.25"
+    limits:
+      memory: "512Mi"
+      cpu: "0.25"
+  autoscaling:
+    enable: true
+    minReplica: 1
+    maxReplica: 10
+    pollingInterval: 10 # seconds
+    cooldownPeriod: 50 # seconds
+    triggers:
+      - type: cpu
+        metadata:
+          # Required
+          type: Utilization # Allowed types are 'Utilization' or 'AverageValue'
+          value: "75"
+  envConfig:
+    WEBSITE_SITE_NAME: 'pagopamocker' # required to show cloud role name in application insights
+    APPLICATIONINSIGHTS_CONNECTION_STRING: 'ai-connection-string'
+    APPLICATIONINSIGHTS_ROLE_NAME: "pagopa-mocker"
+    ENV: 'aks-dev'
+    APP_LOGGING_LEVEL: 'DEBUG'
+    DEFAULT_LOGGING_LEVEL: 'INFO'
+    SPRING_DATASOURCE_URL: 'jdbc:postgresql://pagopa-d-mocker-psql.postgres.database.azure.com/mocker'
+    SPRING_DATASOURCE_DRIVER: 'org.postgresql.Driver'
+    SPRING_JPA_DB_PLATFORM: 'org.hibernate.dialect.PostgreSQLDialect'
+    DATABASE_SCHEMA: 'mocker'
+  envSecret:
+    SPRING_DATASOURCE_USERNAME: 'db-mocker-user-name'
+    SPRING_DATASOURCE_PASSWORD: 'db-mocker-user-password'
+  keyvault:
+    name: "pagopa-d-mocker-kv"
+    tenantId: "7788edaf-0346-4068-9d79-c868aed15b3d"
+  nodeSelector: {}
+  tolerations: []
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: node_type
+                operator: In
+                values:
+                  - user
+  canaryDelivery:
+    deployment:
+      image:
+        tag: 1.0.0

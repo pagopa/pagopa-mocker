@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  mocker-app:
+    container_name: 'pagopamocker'
+    image: ${image}
+    build:
+      dockerfile: Dockerfile
+      context: ../
+    ports:
+      - "8080:8080"
