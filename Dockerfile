@@ -1,16 +1,30 @@
-FROM --platform=linux/amd64 public.ecr.aws/lambda/nodejs:16 as builder
-WORKDIR /usr/app/
-COPY package.json  ./
-COPY tsconfig.json  ./
+#
+# Build stage
+#
+FROM --platform=amd64 maven:3.8.4-jdk-11-slim as mvnbuild
+WORKDIR /build
+COPY . .
+RUN mvn clean package -Dmaven.test.skip=true
 
-COPY src src/
-RUN npm install
-RUN npm install -g rimraf
-RUN npm run build
+#
+# Package stage
+#
+FROM --platform=amd64 adoptopenjdk/openjdk11:alpine-jre as bootimg
+COPY --from=mvnbuild /build/target/*.jar application.jar
+RUN java -Djarmode=layertools -jar application.jar extract
 
-FROM --platform=linux/amd64 public.ecr.aws/lambda/nodejs:16
-WORKDIR ${LAMBDA_TASK_ROOT}
-COPY --from=builder /usr/app/dist/. ./
-COPY --from=builder /usr/app/node_modules/. ../node_modules/
-COPY --from=builder /usr/app/node_modules/. ./
-CMD ["app.handler"]
+#
+# AppInsight installation stage
+#
+FROM --platform=amd64 ghcr.io/pagopa/docker-base-springboot-openjdk11:v1.0.1@sha256:bbbe948e91efa0a3e66d8f308047ec255f64898e7f9250bdb63985efd3a95dbf
+COPY --chown=spring:spring  --from=bootimg dependencies/ ./
+COPY --chown=spring:spring  --from=bootimg snapshot-dependencies/ ./
+# https://github.com/moby/moby/issues/37965#issuecomment-426853382
+RUN true
+COPY --chown=spring:spring  --from=bootimg spring-boot-loader/ ./
+COPY --chown=spring:spring  --from=bootimg application/ ./
+
+EXPOSE 8080
+
+
+
