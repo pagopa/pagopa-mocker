@@ -11,14 +11,11 @@ import java.util.Optional;
 @Configuration
 public class WebConf {
 
-    @Value("${application.urlmapping}")
-    private String urlMapping;
-
     @Bean
     public ServletRegistrationBean<HttpServlet> registerServlet() {
         ServletRegistrationBean<HttpServlet> servRegBean = new ServletRegistrationBean<>();
         servRegBean.setServlet(new ProxyServlet());
-        servRegBean.addUrlMappings(String.format("%s/*", Optional.ofNullable(urlMapping).orElse("")));
+        servRegBean.addUrlMappings("/*");
         servRegBean.setLoadOnStartup(1);
         return servRegBean;
     }

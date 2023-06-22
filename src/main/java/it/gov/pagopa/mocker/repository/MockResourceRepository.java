@@ -1,4 +1,4 @@
-package it.gov.pagopa.mocker.entity.dao;
+package it.gov.pagopa.mocker.repository;
 
 import it.gov.pagopa.mocker.entity.MockResourceEntity;
 import org.springframework.data.repository.Repository;

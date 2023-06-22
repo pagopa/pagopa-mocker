@@ -1,4 +1,4 @@
-package it.gov.pagopa.mocker.misc;
+package it.gov.pagopa.mocker.util;
 
 public class Constants {
 
@@ -11,8 +11,6 @@ public class Constants {
     public static final String HEADER_CONTENTTYPE = "content-type";
 
     public static final String HEADER_CONTENTLENGTH = "content-length";
-
-    public static final String MOCKER_PATH_ROOT = "/mocker";
 
     public static final String STRING_CONTENT_KEY = "content";
 

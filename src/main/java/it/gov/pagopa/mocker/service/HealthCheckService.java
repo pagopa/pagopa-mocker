@@ -1,6 +1,6 @@
 package it.gov.pagopa.mocker.service;
 
-import it.gov.pagopa.mocker.entity.dao.HealthCheckRepository;
+import it.gov.pagopa.mocker.repository.HealthCheckRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessResourceFailureException;

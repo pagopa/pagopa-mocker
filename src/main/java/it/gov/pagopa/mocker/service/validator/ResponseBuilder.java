@@ -1,6 +1,6 @@
-package it.gov.pagopa.mocker.service;
+package it.gov.pagopa.mocker.service.validator;
 
-import it.gov.pagopa.mocker.misc.Constants;
+import it.gov.pagopa.mocker.util.Constants;
 import it.gov.pagopa.mocker.model.ExtractedRequest;
 import it.gov.pagopa.mocker.model.ExtractedResponse;
 import lombok.extern.slf4j.Slf4j;

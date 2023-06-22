@@ -1,4 +1,4 @@
-package it.gov.pagopa.mocker.misc;
+package it.gov.pagopa.mocker.util;
 
 import it.gov.pagopa.mocker.model.enumeration.ConditionType;
 
@@ -8,12 +8,12 @@ import java.util.regex.Pattern;
 
 public class ConditionValidator {
 
-    private static final Map<ConditionType, BiFunction<Object, String, Boolean>> conditionMap;
+    private ConditionValidator() {}
+
+    private static final Map<ConditionType, BiFunction<Object, String, Boolean>> CONDITION_MAP;
     static {
         Map<ConditionType, BiFunction<Object, String, Boolean>> map = new EnumMap<>(ConditionType.class);
-        map.put(ConditionType.REGEX, (fieldValue, conditionValue) -> {
-            return Pattern.compile(conditionValue).matcher((String) fieldValue).find();
-        });
+        map.put(ConditionType.REGEX, (fieldValue, conditionValue) -> Pattern.compile(conditionValue).matcher((String) fieldValue).find());
         map.put(ConditionType.EQ, (fieldValue, conditionValue) -> {
             boolean isValid = false;
             if (fieldValue instanceof String) {
@@ -36,29 +36,17 @@ public class ConditionValidator {
             }
             return isValid;
         });
-        map.put(ConditionType.GT, (fieldValue, conditionValue) -> {
-            return fieldValue instanceof Double && ((Double) fieldValue) > Double.parseDouble(conditionValue);
-        });
-        map.put(ConditionType.LT, (fieldValue, conditionValue) -> {
-            return fieldValue instanceof Double && ((Double) fieldValue) < Double.parseDouble(conditionValue);
-        });
-        map.put(ConditionType.GE, (fieldValue, conditionValue) -> {
-            return fieldValue instanceof Double && ((Double) fieldValue) >= Double.parseDouble(conditionValue);
-        });
-        map.put(ConditionType.LE, (fieldValue, conditionValue) -> {
-            return fieldValue instanceof Double && ((Double) fieldValue) <= Double.parseDouble(conditionValue);
-        });
-        map.put(ConditionType.NULL, (fieldValue, conditionValue) -> {
-            return fieldValue == null;
-        });
-        map.put(ConditionType.ANY, (fieldValue, conditionValue) -> {
-            return fieldValue != null;
-        });
-        conditionMap = Collections.unmodifiableMap(map);
+        map.put(ConditionType.GT, (fieldValue, conditionValue) -> fieldValue instanceof Double && ((Double) fieldValue) > Double.parseDouble(conditionValue));
+        map.put(ConditionType.LT, (fieldValue, conditionValue) -> fieldValue instanceof Double && ((Double) fieldValue) < Double.parseDouble(conditionValue));
+        map.put(ConditionType.GE, (fieldValue, conditionValue) -> fieldValue instanceof Double && ((Double) fieldValue) >= Double.parseDouble(conditionValue));
+        map.put(ConditionType.LE, (fieldValue, conditionValue) -> fieldValue instanceof Double && ((Double) fieldValue) <= Double.parseDouble(conditionValue));
+        map.put(ConditionType.NULL, (fieldValue, conditionValue) -> fieldValue == null);
+        map.put(ConditionType.ANY, (fieldValue, conditionValue) -> fieldValue != null);
+        CONDITION_MAP = Collections.unmodifiableMap(map);
     }
 
     public static boolean validate(Object fieldValue, String conditionValue, ConditionType conditionType) {
-        BiFunction<Object, String, Boolean> conditionFunction = conditionMap.get(conditionType);
+        BiFunction<Object, String, Boolean> conditionFunction = CONDITION_MAP.get(conditionType);
         return conditionFunction != null && conditionFunction.apply(fieldValue, conditionValue);
     }
 

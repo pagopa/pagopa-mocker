@@ -1,10 +1,12 @@
 package it.gov.pagopa.mocker.service;
 
 import it.gov.pagopa.mocker.entity.MockResourceEntity;
-import it.gov.pagopa.mocker.entity.dao.MockResourceRepository;
-import it.gov.pagopa.mocker.exceptions.*;
+import it.gov.pagopa.mocker.repository.MockResourceRepository;
+import it.gov.pagopa.mocker.exception.*;
 import it.gov.pagopa.mocker.model.ExtractedRequest;
 import it.gov.pagopa.mocker.model.ExtractedResponse;
+import it.gov.pagopa.mocker.service.validator.ResourceExtractor;
+import it.gov.pagopa.mocker.service.validator.ResponseBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

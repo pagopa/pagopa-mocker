@@ -1,4 +1,4 @@
-package it.gov.pagopa.mocker.exceptions;
+package it.gov.pagopa.mocker.exception;
 
 public class MockerException extends Exception {
 

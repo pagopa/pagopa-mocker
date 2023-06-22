@@ -1,4 +1,5 @@
-package it.gov.pagopa.mocker.misc;
+package it.gov.pagopa.mocker.util;
+
 import it.gov.pagopa.mocker.model.UnmarshalledBody;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;

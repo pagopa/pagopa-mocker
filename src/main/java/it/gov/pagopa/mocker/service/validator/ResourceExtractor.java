@@ -1,15 +1,15 @@
-package it.gov.pagopa.mocker.service;
+package it.gov.pagopa.mocker.service.validator;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import it.gov.pagopa.mocker.entity.*;
-import it.gov.pagopa.mocker.exceptions.MockerInvalidConfigurationException;
-import it.gov.pagopa.mocker.exceptions.MockerNotCompliantRequestException;
-import it.gov.pagopa.mocker.exceptions.MockerParseRequestException;
-import it.gov.pagopa.mocker.misc.Constants;
-import it.gov.pagopa.mocker.misc.Utility;
-import it.gov.pagopa.mocker.misc.ConditionValidator;
-import it.gov.pagopa.mocker.misc.XMLParser;
+import it.gov.pagopa.mocker.exception.MockerInvalidConfigurationException;
+import it.gov.pagopa.mocker.exception.MockerNotCompliantRequestException;
+import it.gov.pagopa.mocker.exception.MockerParseRequestException;
+import it.gov.pagopa.mocker.util.Constants;
+import it.gov.pagopa.mocker.util.Utility;
+import it.gov.pagopa.mocker.util.ConditionValidator;
+import it.gov.pagopa.mocker.util.XMLParser;
 import it.gov.pagopa.mocker.model.ExtractedRequest;
 import it.gov.pagopa.mocker.model.ExtractedResponse;
 import it.gov.pagopa.mocker.model.UnmarshalledBody;

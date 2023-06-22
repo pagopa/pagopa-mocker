@@ -1,4 +1,4 @@
-package it.gov.pagopa.mocker.entity.dao;
+package it.gov.pagopa.mocker.repository;
 
 
 import javax.persistence.EntityManager;
