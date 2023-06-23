@@ -22,7 +22,7 @@ public class ExtractedRequest {
     private final Map<String, String> queryParameters;
 
     private ExtractedRequest(HttpServletRequest request, String body) {
-        this.url = request.getRequestURI();
+        this.url = request.getRequestURI().replace(Constants.MOCKER_PATH_ROOT, "");
         this.id = Utility.generateID(this.url, request.getMethod().toLowerCase());
         this.body = body;
         this.headers = extractHeaders(request);

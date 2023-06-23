@@ -20,6 +20,8 @@ public class Constants {
 
     public static final String REGEX_XML_TRIM = ">\\s*<";
 
+    public static final String MOCKER_PATH_ROOT = "/mocker";
+
     public static final String REGEX_XML_TRIM_REPLACEMENT = "><";
 
     public static final String EMPTY_STRING = "";

@@ -1,6 +1,8 @@
 package it.gov.pagopa.mocker.controller;
 
 import javax.servlet.http.HttpServlet;
+
+import it.gov.pagopa.mocker.util.Constants;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -15,7 +17,7 @@ public class WebConf {
     public ServletRegistrationBean<HttpServlet> registerServlet() {
         ServletRegistrationBean<HttpServlet> servRegBean = new ServletRegistrationBean<>();
         servRegBean.setServlet(new ProxyServlet());
-        servRegBean.addUrlMappings("/mocker/*");
+        servRegBean.addUrlMappings(String.format("%s/*", Constants.MOCKER_PATH_ROOT));
         servRegBean.setLoadOnStartup(1);
         return servRegBean;
     }

@@ -36,6 +36,8 @@ public class MockResourceEntity implements Serializable {
     private List<MockRuleEntity> rules;
 
     @ManyToMany(targetEntity = TagEntity.class)
-    @JoinTable(name = "mock_resource_tag", joinColumns = @JoinColumn(name = "resource_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    @JoinTable(name = "mock_resource_tag",
+            joinColumns = {@JoinColumn(name = "mock_resource_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "tag_id", referencedColumnName = "id")})
     private List<TagEntity> tags;
 }
