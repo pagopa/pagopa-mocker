@@ -1,42 +1,36 @@
 
--- docker run --name mocker-db -e POSTGRES_PASSWORD=root -p 5432:5432 postgres
-
-CREATE DATABASE mocker;
-
 CREATE SCHEMA mocker;
 
-CREATE USER mockeruser PASSWORD '<PWD>';
-GRANT CONNECT ON DATABASE mocker TO mockeruser;
-GRANT USAGE ON SCHEMA mocker TO mockeruser;
-grant select on all tables in schema mocker to mockeruser;
-grant select on all sequences in schema mocker to mockeruser;
-grant execute on all functions in schema mocker to mockeruser;
-grant all on all tables in schema mocker to mockeruser;
-grant all on all sequences  in schema mocker to mockeruser;
-grant all on all functions in schema mocker to mockeruser;
+CREATE USER mocker_user PASSWORD '<PWD>';
+GRANT CONNECT ON DATABASE mocker TO mocker_user;
+GRANT USAGE ON SCHEMA mocker TO mocker_user;
+grant select on all tables in schema mocker to mocker_user;
+grant select on all sequences in schema mocker to mocker_user;
+grant execute on all functions in schema mocker to mocker_user;
+grant all on all tables in schema mocker to mocker_user;
+grant all on all sequences  in schema mocker to mocker_user;
+grant all on all functions in schema mocker to mocker_user;
 
 CREATE TABLE mocker.mock_resource (
-	id varchar NULL,
+	id varchar NOT NULL,
 	subsystem_url varchar NOT NULL,
 	resource_url varchar NOT NULL,
 	http_method varchar NOT NULL,
 	"name" varchar NOT NULL,
-	tags varchar NULL,
 	CONSTRAINT mock_resource_pk PRIMARY KEY (id)
 );
 
 CREATE TABLE mocker.mock_response (
-	id varchar NULL,
+	id varchar NOT NULL,
 	body varchar NULL,
 	status int8 NOT NULL,
 	CONSTRAINT mock_response_pk PRIMARY KEY (id)
 );
 
 CREATE TABLE mocker.mock_rule (
-	id varchar NULL,
+	id varchar NOT NULL,
 	"name" varchar NOT NULL,
 	"order" int8 NOT NULL,
-	tags varchar NULL,
 	is_active boolean NOT NULL,
 	resource_id varchar NOT NULL,
 	response_id varchar NOT NULL,
@@ -46,8 +40,8 @@ CREATE TABLE mocker.mock_rule (
 );
 
 CREATE TABLE mocker.mock_condition (
-	id varchar NULL,
-	"order" int8 not null,
+	id varchar NOT NULL,
+	"order" int8 NOT NULL,
 	field_position varchar NOT NULL,
 	content_type varchar NOT NULL,
 	field_name varchar NOT NULL,
@@ -73,4 +67,17 @@ CREATE TABLE mocker.injectable_parameter (
 	CONSTRAINT injectable_parameter_fk FOREIGN KEY (response_id) REFERENCES mocker.mock_response(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+CREATE TABLE mocker.tag (
+	id varchar NOT NULL,
+	"value" varchar NOT NULL,
+	CONSTRAINT mock_tag_pk PRIMARY KEY (id)
+);
+
+CREATE TABLE mocker.mock_resource_tag (
+	mock_resource_id varchar NOT NULL,
+	tag_id varchar NOT NULL,
+	CONSTRAINT mock_resource_tag_pk PRIMARY KEY (mock_resource_id,tag_id),
+	CONSTRAINT mock_resource_tag_mock_resource_fk FOREIGN KEY (mock_resource_id) REFERENCES mocker.mock_resource(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT mock_resource_tag_tag_fk FOREIGN KEY (tag_id) REFERENCES mocker.tag(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
 

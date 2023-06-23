@@ -32,10 +32,10 @@ public class MockResourceEntity implements Serializable {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "tags")
-    private String tags;
-
     @OneToMany(targetEntity = MockRuleEntity.class, fetch = FetchType.EAGER, mappedBy = "resource")
     private List<MockRuleEntity> rules;
 
+    @ManyToMany(targetEntity = TagEntity.class)
+    @JoinTable(name = "mock_resource_tag", joinColumns = @JoinColumn(name = "resource_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    private List<TagEntity> tags;
 }

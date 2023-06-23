@@ -23,9 +23,6 @@ public class MockRuleEntity implements Serializable {
     @Column(name = "order")
     private int order;
 
-    @Column(name = "tags")
-    private String tags;
-
     @Column(name = "is_active")
     private boolean isActive;
 
