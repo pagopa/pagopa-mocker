@@ -3,19 +3,19 @@ microservice-chart:
   nameOverride: ""
   fullnameOverride: ""
   image:
-    repository: pagopadcommonacr.azurecr.io/pagopa-mocker
+    repository: ghcr.io/pagopa/pagopa-mocker
     tag: "1.0.1"
     pullPolicy: Always
   livenessProbe:
     httpGet:
-      path: /info
+      path: /mocker/info
       port: 8080
     initialDelaySeconds: 90
     failureThreshold: 6
     periodSeconds: 10
   readinessProbe:
     httpGet:
-      path: /info
+      path: /mocker/info
       port: 8080
     initialDelaySeconds: 90
     failureThreshold: 6

@@ -15,7 +15,7 @@ public class WebConf {
     public ServletRegistrationBean<HttpServlet> registerServlet() {
         ServletRegistrationBean<HttpServlet> servRegBean = new ServletRegistrationBean<>();
         servRegBean.setServlet(new ProxyServlet());
-        servRegBean.addUrlMappings("/*");
+        servRegBean.addUrlMappings("/mocker/*");
         servRegBean.setLoadOnStartup(1);
         return servRegBean;
     }
