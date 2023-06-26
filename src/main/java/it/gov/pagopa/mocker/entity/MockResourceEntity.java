@@ -29,6 +29,9 @@ public class MockResourceEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     private HttpMethod httpMethod;
 
+    @Column(name = "is_active")
+    private Boolean isActive;
+
     @Column(name = "name")
     private String name;
 
