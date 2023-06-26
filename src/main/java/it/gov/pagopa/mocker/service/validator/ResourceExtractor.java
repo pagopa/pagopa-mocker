@@ -21,9 +21,11 @@ import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 @Transactional
@@ -71,7 +73,7 @@ public class ResourceExtractor {
     }
 
     private MockRuleEntity getValidMockRule(MockResourceEntity mockResource, ExtractedRequest request, UnmarshalledBody unmarshalledBody) throws MockerNotCompliantRequestException {
-        List<MockRuleEntity> mockRules = mockResource.getRules();
+        List<MockRuleEntity> mockRules = mockResource.getRules().stream().sorted(Comparator.comparingInt(MockRuleEntity::getOrder)).collect(Collectors.toList());
         int numberOfMockRules = mockRules.size();
         MockRuleEntity result = null;
         int ruleIndex = 0;
