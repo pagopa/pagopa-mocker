@@ -41,7 +41,7 @@ public class ProxyServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
-        String url = req.getRequestURI();
+        String url = req.getRequestURI().replace(Constants.MOCKER_PATH_ROOT, Constants.EMPTY_STRING);
         if ("/info".equals(url)) {
             getAppInfo(resp);
         } else {
