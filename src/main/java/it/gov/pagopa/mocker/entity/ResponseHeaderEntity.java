@@ -1,16 +1,18 @@
 package it.gov.pagopa.mocker.entity;
 
 import it.gov.pagopa.mocker.entity.embeddable.ResponseHeaderKey;
-import javax.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
 import java.io.Serializable;
 
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder(toBuilder = true)
 @Entity
 @Table(name = "response_header")
 public class ResponseHeaderEntity implements Serializable {

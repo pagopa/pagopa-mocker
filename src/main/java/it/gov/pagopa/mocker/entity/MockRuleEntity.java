@@ -1,14 +1,18 @@
 package it.gov.pagopa.mocker.entity;
 
-import javax.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder(toBuilder = true)
 @Entity
 @Table(name = "mock_rule")
 public class MockRuleEntity implements Serializable {
@@ -20,7 +24,7 @@ public class MockRuleEntity implements Serializable {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "order")
+    @Column(name = "\"order\"")
     private int order;
 
     @Column(name = "is_active")
@@ -31,12 +35,6 @@ public class MockRuleEntity implements Serializable {
 
     @Column(name = "response_id", insertable = false, updatable = false)
     private String responseId;
-
-    @ManyToMany(targetEntity = TagEntity.class)
-    @JoinTable(name = "mock_rule_tag",
-            joinColumns = {@JoinColumn(name = "mock_rule_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "tag_id", referencedColumnName = "id")})
-    private List<TagEntity> tags;
 
     @OneToMany(targetEntity = MockConditionEntity.class, fetch = FetchType.EAGER, mappedBy = "rule")
     private List<MockConditionEntity> conditions;

@@ -3,21 +3,28 @@ package it.gov.pagopa.mocker.entity;
 import it.gov.pagopa.mocker.model.enumeration.ConditionType;
 import it.gov.pagopa.mocker.model.enumeration.ContentType;
 import it.gov.pagopa.mocker.model.enumeration.RuleFieldPosition;
-import javax.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
 import java.io.Serializable;
 
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Builder(toBuilder = true)
 @Table(name = "mock_condition")
 public class MockConditionEntity implements Serializable {
 
     @Id
     @Column(name = "id")
     private String id;
+
+    @Column(name = "\"order\"")
+    private int order;
 
     @Column(name = "field_position")
     @Enumerated(EnumType.STRING)
