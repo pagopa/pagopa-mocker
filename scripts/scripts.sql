@@ -3,6 +3,7 @@ CREATE SCHEMA mocker;
 
 CREATE TABLE mocker.mock_resource (
 	id varchar NOT NULL,
+	resource_id varchar NOT NULL,
 	subsystem_url varchar NOT NULL,
 	resource_url varchar NOT NULL,
 	http_method varchar NOT NULL,
@@ -10,6 +11,8 @@ CREATE TABLE mocker.mock_resource (
 	is_active boolean NOT NULL,
 	CONSTRAINT mock_resource_pk PRIMARY KEY (id)
 );
+
+CREATE UNIQUE INDEX mock_resource_idx ON mocker.mock_resource(resource_id);
 
 CREATE TABLE mocker.mock_response (
 	id varchar NOT NULL,

@@ -9,6 +9,6 @@ import java.util.Optional;
 public interface MockResourceRepository extends Repository<MockResourceEntity, String> {
 
     @Transactional
-    Optional<MockResourceEntity> findById(String id);
+    Optional<MockResourceEntity> findByResourceId(String resourceId);
 
 }
