@@ -1,16 +1,6 @@
 
 CREATE SCHEMA mocker;
 
-CREATE USER mocker_user PASSWORD '<PWD>';
-GRANT CONNECT ON DATABASE mocker TO mocker_user;
-GRANT USAGE ON SCHEMA mocker TO mocker_user;
-grant select on all tables in schema mocker to mocker_user;
-grant select on all sequences in schema mocker to mocker_user;
-grant execute on all functions in schema mocker to mocker_user;
-grant all on all tables in schema mocker to mocker_user;
-grant all on all sequences  in schema mocker to mocker_user;
-grant all on all functions in schema mocker to mocker_user;
-
 CREATE TABLE mocker.mock_resource (
 	id varchar NOT NULL,
 	subsystem_url varchar NOT NULL,
@@ -90,3 +80,13 @@ CREATE TABLE mocker.mock_rule_tag (
 	CONSTRAINT mock_rule_tag_tag_fk FOREIGN KEY (tag_id) REFERENCES mocker.tag(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+
+CREATE USER mocker_user PASSWORD '<PWD>';
+GRANT CONNECT ON DATABASE mocker TO mocker_user;
+GRANT USAGE ON SCHEMA mocker TO mocker_user;
+grant select on all tables in schema mocker to mocker_user;
+grant select on all sequences in schema mocker to mocker_user;
+grant execute on all functions in schema mocker to mocker_user;
+grant all on all tables in schema mocker to mocker_user;
+grant all on all sequences  in schema mocker to mocker_user;
+grant all on all functions in schema mocker to mocker_user;
