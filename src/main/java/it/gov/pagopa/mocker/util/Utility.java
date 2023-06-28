@@ -8,7 +8,7 @@ public class Utility {
     private Utility() {}
 
     public static String generateID(String url, String httpMethod) {
-        return url.concat(httpMethod).replaceAll("[\\\\/\\-_]+", Constants.EMPTY_STRING);
+        return httpMethod.concat(url).replaceAll("[\\\\/\\-_]+", Constants.EMPTY_STRING);
     }
 
     public static boolean isNullOrEmpty(String content) {
