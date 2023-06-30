@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import java.io.IOException;
@@ -23,9 +22,6 @@ import java.util.stream.Collectors;
 
 @Slf4j
 public class ProxyServlet extends HttpServlet {
-
-    @Autowired
-    private Environment env;
 
     @Autowired
     private MockerService mockerService;
@@ -68,12 +64,7 @@ public class ProxyServlet extends HttpServlet {
         try {
             response.setStatus(200);
             response.setContentType(Constants.APPLICATION_JSON);
-            AppInfo info = AppInfo.builder()
-                    .name(env.getProperty("application.name"))
-                    .version(env.getProperty("application.version"))
-                    .environment(env.getProperty("application.environment"))
-                    .dbConnection(healthCheckService.checkDBConnection() ? "up" : "down")
-                    .build();
+            AppInfo info = healthCheckService.getAppInfo();
             response.getWriter().append(info.toString());
         } catch (IOException e) {
             log.error("Something failed during writing response for proxy servlet.", e);
