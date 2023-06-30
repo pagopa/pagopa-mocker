@@ -6,6 +6,7 @@ import it.gov.pagopa.mocker.entity.*;
 import it.gov.pagopa.mocker.exception.MockerInvalidConfigurationException;
 import it.gov.pagopa.mocker.exception.MockerNotCompliantRequestException;
 import it.gov.pagopa.mocker.exception.MockerParseRequestException;
+import it.gov.pagopa.mocker.model.JSONUnmarshalledBody;
 import it.gov.pagopa.mocker.util.Constants;
 import it.gov.pagopa.mocker.util.Utility;
 import it.gov.pagopa.mocker.util.ConditionValidator;
@@ -58,13 +59,14 @@ public class ResourceExtractor {
         if (!Utility.isNullOrEmpty(body)) {
             switch (contentType) {
                 case Constants.APPLICATION_JSON:
-                    unmarshalledBody = new UnmarshalledBody(jsonParser.fromJson(body, Map.class));
+                    unmarshalledBody = new JSONUnmarshalledBody(jsonParser.fromJson(body, Map.class));
                     break;
+                case Constants.APPLICATION_XML:
                 case Constants.TEXT_XML:
                     unmarshalledBody = xmlParser.parse(body);
                     break;
                 default:
-                    unmarshalledBody = new UnmarshalledBody(Map.of(Constants.STRING_CONTENT_KEY, body));
+                    unmarshalledBody = new JSONUnmarshalledBody(Map.of(Constants.STRING_CONTENT_KEY, body));
                     break;
             }
         }

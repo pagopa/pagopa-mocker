@@ -1,6 +1,7 @@
 package it.gov.pagopa.mocker.util;
 
-import it.gov.pagopa.mocker.model.UnmarshalledBody;
+import it.gov.pagopa.mocker.model.ParsedNode;
+import it.gov.pagopa.mocker.model.XMLUnmarshalledBody;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -11,7 +12,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.*;
 
 public class XMLParser {
 
@@ -23,14 +23,14 @@ public class XMLParser {
         builder = factory.newDocumentBuilder();
     }
 
-    public UnmarshalledBody parse(String xml) throws IOException, SAXException {
+    public XMLUnmarshalledBody parse(String xml) throws IOException, SAXException {
         String trimmedXml = xml.replaceAll(Constants.REGEX_XML_TRIM, Constants.REGEX_XML_TRIM_REPLACEMENT);
         Document document = builder.parse(new ByteArrayInputStream(trimmedXml.getBytes()));
-        return new UnmarshalledBody(extractFields(document.getDocumentElement()));
+        return new XMLUnmarshalledBody((ParsedNode) extractFields(document.getDocumentElement()));
     }
 
-    public static Map<String, Object> extractFields(Node node) {
-        Map<String, Object> map = new HashMap<>();
+    private Object extractFields(Node node) {
+        ParsedNode finalNode = new ParsedNode();
         NodeList nodeList = node.getChildNodes();
         for (int i = 0; i < nodeList.getLength(); i++) {
             Node currentNode = nodeList.item(i);
@@ -40,26 +40,15 @@ public class XMLParser {
                 fieldValue = extractFields(currentNode);
             }
             else if (currentNode.getNodeType() == Node.TEXT_NODE) {
-                map.put(currentNode.getParentNode().getNodeName(), currentNode.getTextContent());
-                return map;
+                finalNode.setValue(currentNode.getTextContent());
+                return finalNode;
             }
-            if (map.containsKey(fieldName)) {
-                Object nestedFieldContent = map.get(fieldName);
-                if (nestedFieldContent instanceof List) {
-                    ((List<Object>) nestedFieldContent).add(fieldValue);
-                }
-                else {
-                    List<Object> fields = new LinkedList<>();
-                    fields.add(nestedFieldContent);
-                    fields.add(fieldValue);
-                    map.put(fieldName, fields);
-                }
-            }
-            else {
-                map.put(fieldName, fieldValue);
-            }
+
+            Node sibling = currentNode.getNextSibling();
+            finalNode.setAsList(finalNode.isList() || (sibling != null && currentNode.getNodeName().equals(sibling.getNodeName())));
+            finalNode.add(fieldName, fieldValue);
         }
-        return map;
+        return finalNode;
     }
 
     private static String normalizeFieldName(String fieldName) {
