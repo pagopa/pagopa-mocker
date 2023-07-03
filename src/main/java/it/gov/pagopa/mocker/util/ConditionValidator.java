@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.regex.Pattern;
@@ -47,17 +48,17 @@ public class ConditionValidator {
         if (fieldValue instanceof String) {
             result = compare(conditionValue, (String) fieldValue);
         } else if (fieldValue instanceof Integer) {
-            result = compare(conditionValue, Double.valueOf((Integer) fieldValue));
+            result = compare(conditionValue, BigDecimal.valueOf((Integer) fieldValue));
         } else if (fieldValue instanceof Float) {
-            result = compare(conditionValue, Double.valueOf((Float) fieldValue));
+            result = compare(conditionValue, BigDecimal.valueOf((Float) fieldValue));
         } else if (fieldValue instanceof Double) {
-            result = compare(conditionValue, (Double) fieldValue);
+            result = compare(conditionValue, BigDecimal.valueOf((Double) fieldValue));
         } else if (fieldValue instanceof Long) {
-            result = compare(conditionValue, Double.valueOf((Long) fieldValue));
+            result = compare(conditionValue, BigDecimal.valueOf((Long) fieldValue));
         } else if (fieldValue instanceof BigInteger) {
-            result = compare(conditionValue, Double.valueOf(fieldValue.toString()));
+            result = compare(conditionValue, BigDecimal.valueOf(((BigInteger) fieldValue).longValue()));
         } else if (fieldValue instanceof BigDecimal) {
-            result = compare(conditionValue, Double.valueOf(fieldValue.toString()));
+            result = compare(conditionValue, (BigDecimal) fieldValue);
         }
         return result * -1; // invert the order of comparison
     }
@@ -66,7 +67,9 @@ public class ConditionValidator {
         return conditionValue.compareTo(fieldValue);
     }
 
-    private static int compare(String conditionValue, Double fieldValue) {
-        return Double.valueOf(conditionValue).compareTo(fieldValue);
+    private static int compare(String conditionValue, BigDecimal fieldValue) {
+        BigDecimal bigDecimalConditionValue = new BigDecimal(conditionValue);
+        int scale = bigDecimalConditionValue.scale();
+        return bigDecimalConditionValue.compareTo(fieldValue.setScale(scale > 0 ? scale : 10, RoundingMode.HALF_UP));
     }
 }
