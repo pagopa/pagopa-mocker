@@ -3,7 +3,6 @@ package it.gov.pagopa.mocker.service.validator;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import it.gov.pagopa.mocker.entity.*;
-import it.gov.pagopa.mocker.exception.MockerInvalidConfigurationException;
 import it.gov.pagopa.mocker.exception.MockerNotCompliantRequestException;
 import it.gov.pagopa.mocker.exception.MockerParseRequestException;
 import it.gov.pagopa.mocker.model.JSONUnmarshalledBody;
@@ -42,7 +41,7 @@ public class ResourceExtractor {
         this.jsonParser = new Gson();
     }
 
-    public ExtractedResponse extract(ExtractedRequest requestData, MockResourceEntity mockResource) throws MockerParseRequestException, MockerInvalidConfigurationException, MockerNotCompliantRequestException {
+    public ExtractedResponse extract(ExtractedRequest requestData, MockResourceEntity mockResource) throws MockerParseRequestException, MockerNotCompliantRequestException {
         ExtractedResponse extractedResponse;
         try {
             UnmarshalledBody unmarshalledBody = extractBodyFields(requestData.getBody(), requestData.getContentType());
@@ -132,7 +131,7 @@ public class ResourceExtractor {
 
     private boolean isBodyRequestSatisfyingRequirements(MockConditionEntity mockCondition, UnmarshalledBody unmarshalledBody, ExtractedRequest request) throws MockerNotCompliantRequestException {
         log.debug(String.format("Evaluating the mock condition: [%s]: [%s %s %s].", mockCondition.getId(), mockCondition.getFieldName(), mockCondition.getConditionType(), mockCondition.getConditionValue()));
-        boolean isValid;
+        boolean isValid = false;
         if (unmarshalledBody == null) {
             throw new MockerNotCompliantRequestException(request.getUrl());
         } else {
@@ -144,8 +143,6 @@ public class ResourceExtractor {
                 case STRING:
                     isValid = isContentCompliantToCondition(unmarshalledBody.getFieldValue(Constants.STRING_CONTENT_KEY), mockCondition.getConditionValue(), mockCondition.getConditionType());
                     break;
-                default:
-                    throw new MockerNotCompliantRequestException(request.getUrl());
             }
         }
         return isValid;

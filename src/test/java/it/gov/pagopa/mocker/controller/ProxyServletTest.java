@@ -67,7 +67,31 @@ class ProxyServletTest {
         servlet.doGet(request, response);
 
         // Analyzing assertions
-        String expected = TestUtil.readJsonFromFile("response/service_info.json");
+        String expected = TestUtil.readJsonFromFile("response/service_info_ok.json");
+        JSONAssert.assertEquals(expected, response.getContentAsString(), JSONCompareMode.STRICT);
+        assertEquals(200, response.getStatus());
+    }
+
+    @Test
+    @SneakyThrows
+    void testInfo_dbKO() {
+
+        // Mocking objects
+        doReturn(AppInfo.builder()
+                .name("mocker")
+                .version("x.y.z")
+                .environment("test")
+                .dbConnection("down")
+                .build()
+        ).when(healthCheckService).getAppInfo();
+        MockHttpServletRequest request = getMockedHTTPServletRequest(null, "GET", "/info", "application/json");
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        // Executing logic
+        servlet.doGet(request, response);
+
+        // Analyzing assertions
+        String expected = TestUtil.readJsonFromFile("response/service_info_ko.json");
         JSONAssert.assertEquals(expected, response.getContentAsString(), JSONCompareMode.STRICT);
         assertEquals(200, response.getStatus());
     }

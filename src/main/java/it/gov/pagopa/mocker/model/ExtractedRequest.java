@@ -53,7 +53,7 @@ public class ExtractedRequest {
         Iterator<String> it = request.getParameterNames().asIterator();
         while (it.hasNext()) {
             String parameterName = it.next();
-            extractedQueryParameters.put(parameterName, request.getHeader(parameterName));
+            extractedQueryParameters.put(parameterName, request.getParameter(parameterName));
         }
         return extractedQueryParameters;
     }

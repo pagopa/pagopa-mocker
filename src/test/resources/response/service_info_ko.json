@@ -1,0 +1,6 @@
+{
+  "name": "mocker",
+  "version": "x.y.z",
+  "environment": "test",
+  "db_connection": "down"
+}

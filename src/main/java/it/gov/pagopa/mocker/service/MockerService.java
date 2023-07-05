@@ -37,8 +37,8 @@ public class MockerService {
         } catch (MockerException e) {
             response = ResponseBuilder.buildErrorResponse(e.getErrorMessage(), requestData);
         } catch (Exception e) {
-            e.printStackTrace();
-            response = ResponseBuilder.buildErrorResponse("An unhandled error occurred while searching for mocked resource.", requestData);
+            log.error("Error while analyzing the extracted request. ", e);
+            response = ResponseBuilder.buildErrorResponse("An unexpected error occurred while searching for mocked resource.", requestData);
         }
         return response;
     }

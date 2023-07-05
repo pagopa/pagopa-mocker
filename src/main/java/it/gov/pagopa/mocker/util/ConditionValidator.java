@@ -18,17 +18,17 @@ public class ConditionValidator {
     private static final Map<ConditionType, BiFunction<Object, String, Boolean>> CONDITION_MAP;
     static {
         Map<ConditionType, BiFunction<Object, String, Boolean>> map = new EnumMap<>(ConditionType.class);
-        map.put(ConditionType.REGEX, (fieldValue, conditionValue) -> Pattern.compile(conditionValue).matcher((String) fieldValue).find());
-        map.put(ConditionType.EQ, (fieldValue, conditionValue) -> compare(fieldValue, conditionValue) == 0);
-        map.put(ConditionType.NEQ, (fieldValue, conditionValue) -> compare(fieldValue, conditionValue) != 0);
-        map.put(ConditionType.GT, (fieldValue, conditionValue) -> compare(fieldValue, conditionValue) > 0);
-        map.put(ConditionType.LT, (fieldValue, conditionValue) -> compare(fieldValue, conditionValue) < 0);
-        map.put(ConditionType.GE, (fieldValue, conditionValue) -> compare(fieldValue, conditionValue) >= 0);
-        map.put(ConditionType.LE, (fieldValue, conditionValue) -> compare(fieldValue, conditionValue) <= 0);
+        map.put(ConditionType.REGEX, (fieldValue, conditionValue) -> fieldValue != null && Pattern.compile(conditionValue).matcher((String) fieldValue).find());
+        map.put(ConditionType.EQ, (fieldValue, conditionValue) -> fieldValue != null && compare(fieldValue, conditionValue) == 0);
+        map.put(ConditionType.NEQ, (fieldValue, conditionValue) -> fieldValue != null && compare(fieldValue, conditionValue) != 0);
+        map.put(ConditionType.GT, (fieldValue, conditionValue) -> fieldValue != null && compare(fieldValue, conditionValue) > 0);
+        map.put(ConditionType.LT, (fieldValue, conditionValue) -> fieldValue != null && compare(fieldValue, conditionValue) < 0);
+        map.put(ConditionType.GE, (fieldValue, conditionValue) -> fieldValue != null && compare(fieldValue, conditionValue) >= 0);
+        map.put(ConditionType.LE, (fieldValue, conditionValue) -> fieldValue != null && compare(fieldValue, conditionValue) <= 0);
         map.put(ConditionType.NULL, (fieldValue, conditionValue) -> fieldValue == null);
         map.put(ConditionType.ANY, (fieldValue, conditionValue) -> fieldValue != null);
-        map.put(ConditionType.TRUE, (fieldValue, conditionValue) -> Boolean.parseBoolean(fieldValue.toString()));
-        map.put(ConditionType.FALSE, (fieldValue, conditionValue) -> !Boolean.parseBoolean(fieldValue.toString()));
+        map.put(ConditionType.TRUE, (fieldValue, conditionValue) -> fieldValue != null && Boolean.parseBoolean(fieldValue.toString()));
+        map.put(ConditionType.FALSE, (fieldValue, conditionValue) -> fieldValue != null && !Boolean.parseBoolean(fieldValue.toString()));
         CONDITION_MAP = Collections.unmodifiableMap(map);
     }
 

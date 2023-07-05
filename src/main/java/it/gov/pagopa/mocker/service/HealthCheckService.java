@@ -6,6 +6,7 @@ import it.gov.pagopa.mocker.util.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +35,7 @@ public class HealthCheckService {
     private boolean checkDBConnection() {
         try {
             return dao.health().isPresent();
-        } catch (DataAccessResourceFailureException e) {
+        } catch (DataAccessException e) {
             return false;
         }
     }
