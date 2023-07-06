@@ -1,7 +1,7 @@
 package it.gov.pagopa.mocker.model;
 
-import it.gov.pagopa.mocker.misc.Constants;
-import it.gov.pagopa.mocker.misc.Utility;
+import it.gov.pagopa.mocker.util.Constants;
+import it.gov.pagopa.mocker.util.Utility;
 import javax.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +22,7 @@ public class ExtractedRequest {
     private final Map<String, String> queryParameters;
 
     private ExtractedRequest(HttpServletRequest request, String body) {
-        this.url = request.getRequestURI().replace(Constants.MOCKER_PATH_ROOT, "");
+        this.url = request.getRequestURI().replace(Constants.MOCKER_PATH_ROOT, Constants.EMPTY_STRING);
         this.id = Utility.generateID(this.url, request.getMethod().toLowerCase());
         this.body = body;
         this.headers = extractHeaders(request);
@@ -53,7 +53,7 @@ public class ExtractedRequest {
         Iterator<String> it = request.getParameterNames().asIterator();
         while (it.hasNext()) {
             String parameterName = it.next();
-            extractedQueryParameters.put(parameterName, request.getHeader(parameterName));
+            extractedQueryParameters.put(parameterName, request.getParameter(parameterName));
         }
         return extractedQueryParameters;
     }

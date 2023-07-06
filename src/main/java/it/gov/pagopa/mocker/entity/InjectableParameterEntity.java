@@ -2,15 +2,17 @@ package it.gov.pagopa.mocker.entity;
 
 import it.gov.pagopa.mocker.entity.embeddable.InjectableParameterKey;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder(toBuilder = true)
 @Entity
 @Table(name = "injectable_parameter")
 public class InjectableParameterEntity implements Serializable {

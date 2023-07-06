@@ -5,7 +5,7 @@ locals {
   }
 
   prefix         = "pagopa"
-  domain         = "mocker"
+  domain         = "mock"
   location_short = "weu"
   product        = "${var.prefix}-${var.env_short}"
 

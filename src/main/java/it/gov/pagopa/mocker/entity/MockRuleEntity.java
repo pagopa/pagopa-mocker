@@ -1,14 +1,18 @@
 package it.gov.pagopa.mocker.entity;
 
-import javax.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder(toBuilder = true)
 @Entity
 @Table(name = "mock_rule")
 public class MockRuleEntity implements Serializable {
@@ -20,11 +24,8 @@ public class MockRuleEntity implements Serializable {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "order")
+    @Column(name = "\"order\"")
     private int order;
-
-    @Column(name = "tags")
-    private String tags;
 
     @Column(name = "is_active")
     private boolean isActive;

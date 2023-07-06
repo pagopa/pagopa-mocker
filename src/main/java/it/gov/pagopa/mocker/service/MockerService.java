@@ -1,10 +1,12 @@
 package it.gov.pagopa.mocker.service;
 
 import it.gov.pagopa.mocker.entity.MockResourceEntity;
-import it.gov.pagopa.mocker.entity.dao.MockResourceRepository;
-import it.gov.pagopa.mocker.exceptions.*;
+import it.gov.pagopa.mocker.repository.MockResourceRepository;
+import it.gov.pagopa.mocker.exception.*;
 import it.gov.pagopa.mocker.model.ExtractedRequest;
 import it.gov.pagopa.mocker.model.ExtractedResponse;
+import it.gov.pagopa.mocker.service.validator.ResourceExtractor;
+import it.gov.pagopa.mocker.service.validator.ResponseBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,16 +37,16 @@ public class MockerService {
         } catch (MockerException e) {
             response = ResponseBuilder.buildErrorResponse(e.getErrorMessage(), requestData);
         } catch (Exception e) {
-            e.printStackTrace();
-            response = ResponseBuilder.buildErrorResponse("An unhandled error occurred while searching for mocked resource.", requestData);
+            log.error("Error while analyzing the extracted request. ", e);
+            response = ResponseBuilder.buildErrorResponse("An unexpected error occurred while searching for mocked resource.", requestData);
         }
         return response;
     }
 
-    private MockResourceEntity getMockResourceFromDB(ExtractedRequest requestData) throws MockerNotRegisteredException {
-        MockResourceEntity mockResource = dao.findById(requestData.getId());
-        if (mockResource == null) {
-            throw new MockerNotRegisteredException(requestData.getUrl());
+    private MockResourceEntity getMockResourceFromDB(ExtractedRequest requestData) throws MockerNotRegisteredException, MockerNotActiveException {
+        MockResourceEntity mockResource = dao.findByResourceId(requestData.getId()).orElseThrow(() -> new MockerNotRegisteredException(requestData.getUrl()));
+        if (Boolean.FALSE.equals(mockResource.getIsActive())) {
+            throw new MockerNotActiveException(requestData.getUrl());
         }
         return mockResource;
     }

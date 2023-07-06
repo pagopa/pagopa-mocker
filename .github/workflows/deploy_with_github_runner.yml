@@ -13,7 +13,7 @@ on:
         type: string
 
 env:
-  NAMESPACE: mocker
+  NAMESPACE: mock
   APP_NAME: pagopamocker
 
 

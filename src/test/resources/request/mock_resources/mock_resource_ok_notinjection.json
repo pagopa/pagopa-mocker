@@ -1,0 +1,90 @@
+{
+  "id": "mock-resource-uuid",
+  "resourceId": "postecserviceapiv1organizations77777777777",
+  "name": "Get creditor institution with ID 77777777777",
+  "subsystemUrl": "ec-service/api/v1",
+  "resourceUrl": "organizations/77777777777",
+  "httpMethod": "POST",
+  "isActive": true,
+  "rules": [
+    {
+      "id": "mock-rule-uuid-1",
+      "name": "Main Rule",
+      "order": 1,
+      "isActive": true,
+      "conditions": [
+        {
+          "id": "mock-condition-uuid-1",
+          "order": 1,
+          "fieldPosition": "BODY",
+          "analyzedContentType": "JSON",
+          "fieldName": "name",
+          "conditionType": "EQ",
+          "conditionValue": "fake-ec"
+        },
+        {
+          "id": "mock-condition-uuid-2",
+          "order": 2,
+          "fieldPosition": "HEADER",
+          "analyzedContentType": "STRING",
+          "fieldName": "X-Client-Name",
+          "conditionType": "REGEX",
+          "conditionValue": "^pagopa$"
+        }
+      ],
+      "response": {
+        "id": "mock-response-uuid-1",
+        "body": "ewogICAgIm9yZ2FuaXphdGlvbk5hbWUiOiAiJHt1bmluamVjdGFibGV9IiwKICAgICJvcmdhbml6YXRpb25PbmJvYXJkaW5nRGF0ZSI6ICIyMDIzLTA2LTIwVDE1OjAzOjU2Ljg2MjY0MSIKfQ==",
+        "status": 200,
+        "headers": [
+          {
+            "id": {
+              "header": "Content-Type"
+            },
+            "value": "application/json"
+          },
+          {
+            "id": {
+              "header": "X-Powered-By"
+            },
+            "value": "Mocker"
+          }
+        ],
+        "parameters": [
+          {
+            "id": {
+              "parameter": "uninjectable"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "mock-rule-uuid-2",
+      "name": "Parachute Rule",
+      "order": 10000,
+      "isActive": true,
+      "conditions": [ ],
+      "response": {
+        "id": "mock-response-uuid-2",
+        "body": "ewogICAgIm9yZ2FuaXphdGlvbk5hbWUiOiAicGFyYWNodXRlIG9yZ2FuaXphdGlvbiIsCiAgICAib3JnYW5pemF0aW9uT25ib2FyZGluZ0RhdGUiOiAiMjAyMy0wNi0yMFQxNTowMzo1Ni44NjI2NDEiCn0=",
+        "status": 200,
+        "headers": [
+          {
+            "id": {
+              "header": "Content-Type"
+            },
+            "value": "application/json"
+          },
+          {
+            "id": {
+              "header": "X-Powered-By"
+            },
+            "value": "Mocker"
+          }
+        ],
+        "parameters": [ ]
+      }
+    }
+  ]
+}

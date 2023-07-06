@@ -9,5 +9,7 @@ public enum ConditionType {
     LE,
     GE,
     NULL,
-    ANY
+    ANY,
+    TRUE,
+    FALSE
 }

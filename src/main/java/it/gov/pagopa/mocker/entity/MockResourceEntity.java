@@ -1,16 +1,20 @@
 package it.gov.pagopa.mocker.entity;
 
 import it.gov.pagopa.mocker.model.enumeration.HttpMethod;
-import javax.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
 
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder(toBuilder = true)
 @Entity
 @Table(name = "mock_resource")
 public class MockResourceEntity implements Serializable {
@@ -18,6 +22,9 @@ public class MockResourceEntity implements Serializable {
     @Id
     @Column(name = "id")
     private String id;
+
+    @Column(name = "resource_id")
+    private String resourceId;
 
     @Column(name = "subsystem_url")
     private String subsystemUrl;
@@ -29,13 +36,12 @@ public class MockResourceEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     private HttpMethod httpMethod;
 
+    @Column(name = "is_active")
+    private Boolean isActive;
+
     @Column(name = "name")
     private String name;
 
-    @Column(name = "tags")
-    private String tags;
-
-    @OneToMany(targetEntity = MockRuleEntity.class, fetch = FetchType.EAGER, mappedBy = "resource")
+    @OneToMany(targetEntity = MockRuleEntity.class, fetch = FetchType.EAGER, mappedBy = "resource", cascade = CascadeType.ALL)
     private List<MockRuleEntity> rules;
-
 }

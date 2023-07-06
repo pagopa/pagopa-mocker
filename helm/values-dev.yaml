@@ -1,10 +1,10 @@
 microservice-chart:
-  namespace: "mocker"
+  namespace: "mock"
   nameOverride: ""
   fullnameOverride: ""
   image:
-    repository: pagopadcommonacr.azurecr.io/pagopa-mocker
-    tag: "1.0.1"
+    repository: ghcr.io/pagopa/pagopa-mocker
+    tag: "1.0.1-4-refactoring"
     pullPolicy: Always
   livenessProbe:
     httpGet:
@@ -28,7 +28,7 @@ microservice-chart:
     port: 8080
   ingress:
     create: true
-    host: "weudev.mocker.internal.dev.platform.pagopa.it"
+    host: "weudev.mock.internal.dev.platform.pagopa.it"
     path: /pagopa-mocker/(.*)
   serviceAccount:
     create: false
@@ -72,9 +72,9 @@ microservice-chart:
     DATABASE_SCHEMA: 'mocker'
   envSecret:
     SPRING_DATASOURCE_USERNAME: 'db-mocker-user-name'
-    SPRING_DATASOURCE_PASSWORD: 'db-mocker-user-password'
+    SPRING_DATASOURCE_PASSWORD: 'db-mocker-user-pwd'
   keyvault:
-    name: "pagopa-d-mocker-kv"
+    name: "pagopa-d-mock-kv"
     tenantId: "7788edaf-0346-4068-9d79-c868aed15b3d"
   nodeSelector: {}
   tolerations: []
@@ -90,4 +90,4 @@ microservice-chart:
   canaryDelivery:
     deployment:
       image:
-        tag: 1.0.1
+        tag: 1.0.1-4-refactoring
