@@ -23,9 +23,6 @@ public class MockResourceEntity implements Serializable {
     @Column(name = "id")
     private String id;
 
-    @Column(name = "resource_id")
-    private String resourceId;
-
     @Column(name = "subsystem_url")
     private String subsystemUrl;
 

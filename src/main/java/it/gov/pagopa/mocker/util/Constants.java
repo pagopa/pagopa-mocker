@@ -26,6 +26,8 @@ public class Constants {
 
     public static final String EMPTY_STRING = "";
 
+    public static final String WHITESPACE = " ";
+
 
     private Constants() {}
 }
