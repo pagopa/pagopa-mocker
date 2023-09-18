@@ -1,6 +1,5 @@
 {
-  "id": "mock-resource-uuid",
-  "resourceId": "postecserviceapiv1organizations77777777777",
+  "id": "bce9086e9cf15dd62401b7a440f75610",
   "name": "Get creditor institution with ID 77777777777",
   "subsystemUrl": "ec-service/api/v1",
   "resourceUrl": "organizations/77777777777",
