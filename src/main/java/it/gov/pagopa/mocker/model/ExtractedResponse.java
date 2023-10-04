@@ -10,6 +10,7 @@ import java.util.Map;
 @Setter
 @Builder
 public class ExtractedResponse {
+    private boolean isCacheable;
     private String body;
     private int status;
     private Map<String, String> headers;

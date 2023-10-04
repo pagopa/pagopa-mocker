@@ -15,15 +15,20 @@ import java.util.Map;
 public class ExtractedRequest {
 
     private final String id;
+
     private final String url;
+
     private final String contentType;
+
     private final String body;
+
     private final Map<String, String> headers;
+
     private final Map<String, String> queryParameters;
 
     private ExtractedRequest(HttpServletRequest request, String body) {
         this.url = request.getRequestURI().replace(Constants.MOCKER_PATH_ROOT, Constants.EMPTY_STRING);
-        this.id = Utility.generateID(this.url, request.getMethod().toLowerCase());
+        this.id = Utility.generateHash(this.url, request.getMethod().toLowerCase());
         this.body = body;
         this.headers = extractHeaders(request);
         this.contentType = (this.headers.isEmpty() || this.headers.get(Constants.HEADER_CONTENTTYPE) == null) ? Constants.APPLICATION_JSON : this.headers.get(Constants.HEADER_CONTENTTYPE);

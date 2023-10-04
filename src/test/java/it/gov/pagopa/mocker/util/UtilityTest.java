@@ -20,7 +20,7 @@ class UtilityTest {
         String httpMethod = "GET";
         byte[] requestIdBytes = httpMethod.concat(Constants.WHITESPACE).concat(url).getBytes(StandardCharsets.UTF_8);
         MessageDigest md = MessageDigest.getInstance("MD5");
-        assertEquals(new String(md.digest(requestIdBytes)), Utility.generateID(url, httpMethod));
+        assertEquals(new String(md.digest(requestIdBytes)), Utility.generateHash(url, httpMethod));
     }
 
     @Test
