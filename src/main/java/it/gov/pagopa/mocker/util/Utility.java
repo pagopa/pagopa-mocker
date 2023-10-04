@@ -12,16 +12,24 @@ public class Utility {
 
     private Utility() {}
 
-    public static String generateID(String url, String httpMethod) {
-        String hashedId = "";
+    public static String generateHash(String... content) {
+        String hashedContent = "";
         try {
-            byte[] requestIdBytes = httpMethod.concat(Constants.WHITESPACE).concat(url).getBytes(StandardCharsets.UTF_8);
+            StringBuilder builder = new StringBuilder();
+            Iterator<String> it = Arrays.stream(content).iterator();
+            while (it.hasNext()) {
+                builder.append(it.next());
+                if (it.hasNext()) {
+                    builder.append(Constants.WHITESPACE);
+                }
+            }
+            byte[] requestIdBytes = builder.toString().getBytes(StandardCharsets.UTF_8);
             MessageDigest md = MessageDigest.getInstance("MD5");
-            hashedId = new String(md.digest(requestIdBytes));
+            hashedContent = new String(md.digest(requestIdBytes));
         } catch (NoSuchAlgorithmException e) {
-            log.error("Error while generating the hash value from URL and HTTP method. No valid algorithm found as 'MD5'.", e);
+            log.error("Error while generating the hash value from objects. No valid algorithm found as 'MD5'.", e);
         }
-        return hashedId;
+        return hashedContent;
     }
 
     public static boolean isNullOrEmpty(String content) {
