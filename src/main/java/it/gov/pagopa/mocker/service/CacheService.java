@@ -14,15 +14,15 @@ import java.util.concurrent.TimeUnit;
 public class CacheService {
 
     @Autowired
-    @Qualifier("redisTemplate")
-    private RedisTemplate<String, ExtractedResponse> template;
+    @Qualifier("extractedRequest")
+    private RedisTemplate<String, Object> extractedRequest;
 
     public ExtractedResponse get(String key, String hashKey) {
-        return (ExtractedResponse) template.opsForHash().get(key, hashKey);
+        return (ExtractedResponse) extractedRequest.opsForHash().get(key, hashKey);
     }
 
     public void set(String key, String hashKey, ExtractedResponse hashValue) {
-        template.expire(key, 5, TimeUnit.DAYS);
-        template.opsForHash().put(key, hashKey, hashValue);
+        extractedRequest.expire(key, 5, TimeUnit.DAYS);
+        extractedRequest.opsForHash().put(key, hashKey, hashValue);
     }
 }

@@ -29,10 +29,14 @@ public class ProxyService {
         String body = extractedRequest.getBody();
         String hashedRequest = Utility.generateHash(headers, queryParams, body);
 
+        log.trace(String.format("Extracted headers: [%s] Extracted query parameter: [%s]", headers, queryParams));
+        log.debug(String.format("Retrieving mocked response from cache using the id [%s:%s].", hashedID, hashedRequest));
         ExtractedResponse response = cacheService.get(hashedID, hashedRequest);
         if (response == null) {
+            log.debug("No mocked response found in cache. Trying to retrieve it from database.");
             response = mockerService.analyze(extractedRequest);
             if (response != null && response.isCacheable()) {
+                log.debug(String.format("The found mock response will be cached using the id [%s:%s].", hashedID, hashedRequest));
                 cacheService.set(hashedID, hashedRequest, response);
             }
         }
@@ -43,7 +47,7 @@ public class ProxyService {
         List<String> formattedHeaders = headers.keySet()
                 .stream()
                 .sorted()
-                .filter(headerKey -> !Constants.NOT_CACHEABLE_HEADERS.contains(headerKey))
+                .filter(headerKey -> !Constants.NOT_CACHEABLE_HEADERS.contains(headerKey.toLowerCase()))
                 .map(headerKey -> String.format("\"%s\":\"%s\"", headerKey, headers.get(headerKey)))
                 .collect(Collectors.toList());
         return "headers:" + formattedHeaders.toString() + ";";

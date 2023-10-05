@@ -13,6 +13,7 @@ public class Utility {
     private Utility() {}
 
     public static String generateHash(String... content) {
+        System.out.println("CONTENT: " + content[0] + " " + content[1]);
         String hashedContent = "";
         try {
             StringBuilder builder = new StringBuilder();
@@ -25,11 +26,24 @@ public class Utility {
             }
             byte[] requestIdBytes = builder.toString().getBytes(StandardCharsets.UTF_8);
             MessageDigest md = MessageDigest.getInstance("MD5");
-            hashedContent = new String(md.digest(requestIdBytes));
+            byte[] digestByteArray = md.digest(requestIdBytes);
+
+            StringBuilder hashStringBuilder = new StringBuilder();
+            for (byte b : digestByteArray) {
+                if ((0xff & b) < 0x10) {
+                    hashStringBuilder.append('0');
+                }
+                hashStringBuilder.append(Integer.toHexString(0xff & b));
+            }
+            hashedContent = hashStringBuilder.toString();
         } catch (NoSuchAlgorithmException e) {
             log.error("Error while generating the hash value from objects. No valid algorithm found as 'MD5'.", e);
         }
         return hashedContent;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(Utility.generateHash("/gpd-reporting-orgs-enrollment/api/v1/organizations/99999999999", "get"));
     }
 
     public static boolean isNullOrEmpty(String content) {

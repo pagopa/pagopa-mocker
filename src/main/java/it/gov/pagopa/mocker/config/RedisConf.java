@@ -9,22 +9,24 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 public class RedisConf {
 
-    @Value("${redis.host}")
+    @Value("${spring.redis.host}")
     private String redisHost;
 
-    @Value("${redis.port}")
+    @Value("${spring.redis.port}")
     private int redisPort;
 
-    @Value("${redis.pwd}")
+    @Value("${spring.redis.pwd}")
     private String redisPwd;
 
     @Bean
@@ -43,12 +45,13 @@ public class RedisConf {
     }
 
     @Bean
-    @Qualifier("redisTemplate")
-    public RedisTemplate<String, ExtractedRequest> redisObjectTemplate(final LettuceConnectionFactory connectionFactory, ObjectMapper objectMapper) {
-        RedisTemplate<String, ExtractedRequest> template = new RedisTemplate<>();
+    @Qualifier("extractedRequest")
+    public RedisTemplate<String, Object> redisObjectTemplate(final LettuceConnectionFactory connectionFactory, ObjectMapper objectMapper) {
+        RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setKeySerializer(new StringRedisSerializer());
-        final var objectRedisSerializer = new ObjectRedisSerializer<ExtractedRequest>();
-        template.setValueSerializer(objectRedisSerializer);
+        final var jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<>(Object.class);
+        jackson2JsonRedisSerializer.setObjectMapper(objectMapper);
+        template.setValueSerializer(jackson2JsonRedisSerializer);
         template.setConnectionFactory(connectionFactory);
         return template;
     }

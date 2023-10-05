@@ -33,7 +33,9 @@ public class Constants {
     public static final Set<String> NOT_CACHEABLE_HEADERS = Set.of(
             "authorization", "age", "etag",
             "expires", "if-modified-since", "if-none-match",
-            "last-modified", "user-agent"
+            "last-modified", "user-agent",
+            // custom variable headers
+            "postman-token"
     );
 
     public static final String WHITESPACE = " ";
