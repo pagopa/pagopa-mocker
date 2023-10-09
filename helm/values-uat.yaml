@@ -4,7 +4,7 @@ microservice-chart:
   fullnameOverride: ""
   image:
     repository: ghcr.io/pagopa/pagopa-mocker
-    tag: "1.0.2-5-infrastructure-optimization"
+    tag: "1.0.2-6-infrastructure-optimization"
     pullPolicy: Always
   livenessProbe:
     httpGet:
