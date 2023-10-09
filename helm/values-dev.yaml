@@ -60,19 +60,22 @@ microservice-chart:
           type: Utilization # Allowed types are 'Utilization' or 'AverageValue'
           value: "75"
   envConfig:
-    WEBSITE_SITE_NAME: 'pagopamocker' # required to show cloud role name in application insights
+    WEBSITE_SITE_NAME: 'pagopamocker'
     APPLICATIONINSIGHTS_CONNECTION_STRING: 'ai-connection-string'
     APPLICATIONINSIGHTS_ROLE_NAME: "pagopa-mocker"
     ENV: 'aks-dev'
     APP_LOGGING_LEVEL: 'DEBUG'
     DEFAULT_LOGGING_LEVEL: 'INFO'
-    SPRING_DATASOURCE_URL: 'jdbc:postgresql://pagopa-d-mocker-psql.postgres.database.azure.com/mocker'
     SPRING_DATASOURCE_DRIVER: 'org.postgresql.Driver'
     SPRING_JPA_DB_PLATFORM: 'org.hibernate.dialect.PostgreSQLDialect'
     DATABASE_SCHEMA: 'mocker'
+    REDIS_HOST: "pagopa-d-redis.redis.cache.windows.net"
+    REDIS_PORT: "6380"
   envSecret:
+    SPRING_DATASOURCE_URL: 'db-mocker-url'
     SPRING_DATASOURCE_USERNAME: 'db-mocker-user-name'
     SPRING_DATASOURCE_PASSWORD: 'db-mocker-user-pwd'
+    REDIS_PASSWORD: 'redis-password'
   keyvault:
     name: "pagopa-d-mock-kv"
     tenantId: "7788edaf-0346-4068-9d79-c868aed15b3d"
