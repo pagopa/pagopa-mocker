@@ -61,8 +61,7 @@ microservice-chart:
           value: "75"
   envConfig:
     WEBSITE_SITE_NAME: 'pagopamocker'
-    APPLICATIONINSIGHTS_CONNECTION_STRING: 'ai-connection-string'
-    APPLICATIONINSIGHTS_ROLE_NAME: "pagopa-mocker"
+    OTEL_ENDPOINT: "http://otel-collector.elastic-system.svc.cluster.local:4317"
     ENV: 'aks-dev'
     APP_LOGGING_LEVEL: 'DEBUG'
     DEFAULT_LOGGING_LEVEL: 'INFO'
@@ -76,6 +75,7 @@ microservice-chart:
     SPRING_DATASOURCE_USERNAME: 'db-mocker-user-name'
     SPRING_DATASOURCE_PASSWORD: 'db-mocker-user-pwd'
     REDIS_PASSWORD: 'redis-password'
+    OTEL_AUTH_BEARER: "otel-auth-bearer"
   keyvault:
     name: "pagopa-d-mock-kv"
     tenantId: "7788edaf-0346-4068-9d79-c868aed15b3d"
