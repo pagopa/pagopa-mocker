@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Slf4j
@@ -44,10 +45,17 @@ public class ProxyService {
     }
 
     private String extractHeaderSubstring(Map<String, String> headers) {
+        Set<String> exclusionInRuntime = new HashSet<>();
+        String excludeHeadersfromCache = headers.get("x-cache-exclude-headers");
+        if (!Utility.isNullOrEmpty(excludeHeadersfromCache)) {
+            exclusionInRuntime.addAll(Stream.of(excludeHeadersfromCache.split(","))
+                    .map(header -> header.toLowerCase().trim())
+                    .collect(Collectors.toList()));
+        }
         List<String> formattedHeaders = headers.keySet()
                 .stream()
                 .sorted()
-                .filter(headerKey -> !Constants.NOT_CACHEABLE_HEADERS.contains(headerKey.toLowerCase()))
+                .filter(headerKey -> (!Constants.NOT_CACHEABLE_HEADERS.contains(headerKey.toLowerCase()) && !exclusionInRuntime.contains(headerKey.toLowerCase())))
                 .map(headerKey -> String.format("\"%s\":\"%s\"", headerKey, headers.get(headerKey)))
                 .collect(Collectors.toList());
         return "headers:" + formattedHeaders.toString() + ";";
