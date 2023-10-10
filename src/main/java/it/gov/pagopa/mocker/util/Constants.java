@@ -37,11 +37,12 @@ public class Constants {
     );
 
     public static final Set<String> NOT_CACHEABLE_HEADERS_CLOUDPROVIDER = Set.of(
-            "tracecparent", "x-appgw-trace-id", "x-client-ip",
+            "traceparent", "x-appgw-trace-id", "x-client-ip",
             "x-real-ip", "x-request-id"
     );
 
     public static final Set<String> NOT_CACHEABLE_HEADERS_CUSTOM = Set.of(
+            "x-cache-exclude-headers",
             "postman-token"
     );
 
