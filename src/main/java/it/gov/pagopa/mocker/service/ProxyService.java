@@ -24,7 +24,7 @@ public class ProxyService {
 
     public ExtractedResponse extract(ExtractedRequest extractedRequest) {
 
-        String hashedID = extractedRequest.getCacheId();
+        String hashedID = extractedRequest.getId();
         String headers = extractHeaderSubstring(extractedRequest.getHeaders());
         String queryParams = extractQueryParameterSubstring(extractedRequest.getQueryParameters());
         String body = extractedRequest.getBody();

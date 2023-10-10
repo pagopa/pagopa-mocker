@@ -42,10 +42,6 @@ public class Utility {
         return hashedContent;
     }
 
-    public static void main(String[] args) {
-        System.out.println(Utility.generateHash("/gpd-reporting-orgs-enrollment/api/v1/organizations/99999999999", "get"));
-    }
-
     public static boolean isNullOrEmpty(String content) {
         return content == null || Constants.EMPTY_STRING.equals(content);
     }
