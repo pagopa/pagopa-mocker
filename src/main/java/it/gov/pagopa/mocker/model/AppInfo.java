@@ -20,9 +20,10 @@ public class AppInfo {
     private String version;
     private String environment;
     private String dbConnection;
+    private String redisConnection;
 
     @Override
     public String toString() {
-        return String.format("{ \"name\" : \"%s\", \"version\": \"%s\", \"environment\" : \"%s\", \"db_connection\" : \"%s\" }", name, version, environment, dbConnection);
+        return String.format("{ \"name\" : \"%s\", \"version\": \"%s\", \"environment\" : \"%s\", \"db_connection\" : \"%s\", \"redis_connection\" : \"%s\" }", name, version, environment, dbConnection, redisConnection);
     }
 }

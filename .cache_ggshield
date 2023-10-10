@@ -1,1 +1,0 @@
-{"last_found_secrets": [{"name": "PostgreSQL Credentials - helm/values-dev.yaml", "match": "823048a392b266d9d4d1c0fdc4cc168c5959eb064493e0d4f8ca31b35f4be37e"}, {"name": "PostgreSQL Credentials - helm/values-uat.yaml", "match": "d2844f4b10103d2e07be01d8ccf0cc7ead5f5c5392729b0e9b1c10693f815653"}]}
