@@ -5,6 +5,9 @@ import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes = MockerApplication.class)
@@ -15,8 +18,9 @@ class UtilityTest {
     void testGenerateID() {
         String url = "/Creditor-Institutions/7777\\7777777/some__detail";
         String httpMethod = "GET";
-        String result = Utility.generateID(url, httpMethod);
-        assertEquals("getcreditorinstitutions77777777777somedetail", result);
+        byte[] requestIdBytes = httpMethod.concat(Constants.WHITESPACE).concat(url).getBytes(StandardCharsets.UTF_8);
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        assertEquals(new String(md.digest(requestIdBytes)), Utility.generateHash(url, httpMethod));
     }
 
     @Test

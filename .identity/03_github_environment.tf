@@ -78,3 +78,17 @@ resource "github_actions_secret" "repo_secrets" {
   plaintext_value = each.value
 }
 
+############
+## Labels ##
+############
+resource "github_issue_label" "patch" {
+  repository = local.github.repository
+  name       = "patch"
+  color      = "FF0000"
+}
+
+resource "github_issue_label" "ignore_for_release" {
+  repository = local.github.repository
+  name       = "ignore-for-release"
+  color      = "008000"
+}

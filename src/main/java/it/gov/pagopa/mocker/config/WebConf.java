@@ -1,7 +1,8 @@
-package it.gov.pagopa.mocker.controller;
+package it.gov.pagopa.mocker.config;
 
 import javax.servlet.http.HttpServlet;
 
+import it.gov.pagopa.mocker.controller.ProxyServlet;
 import it.gov.pagopa.mocker.util.Constants;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;

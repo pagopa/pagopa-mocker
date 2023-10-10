@@ -1,14 +1,49 @@
 package it.gov.pagopa.mocker.util;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
+@Slf4j
 public class Utility {
 
     private Utility() {}
 
-    public static String generateID(String url, String httpMethod) {
-        return httpMethod.concat(url).replaceAll("[\\\\/\\-_]+", Constants.EMPTY_STRING).toLowerCase();
+    public static String generateHash(String... content) {
+        System.out.println("CONTENT: " + content[0] + " " + content[1]);
+        String hashedContent = "";
+        try {
+            StringBuilder builder = new StringBuilder();
+            Iterator<String> it = Arrays.stream(content).iterator();
+            while (it.hasNext()) {
+                builder.append(it.next());
+                if (it.hasNext()) {
+                    builder.append(Constants.WHITESPACE);
+                }
+            }
+            byte[] requestIdBytes = builder.toString().getBytes(StandardCharsets.UTF_8);
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] digestByteArray = md.digest(requestIdBytes);
+
+            StringBuilder hashStringBuilder = new StringBuilder();
+            for (byte b : digestByteArray) {
+                if ((0xff & b) < 0x10) {
+                    hashStringBuilder.append('0');
+                }
+                hashStringBuilder.append(Integer.toHexString(0xff & b));
+            }
+            hashedContent = hashStringBuilder.toString();
+        } catch (NoSuchAlgorithmException e) {
+            log.error("Error while generating the hash value from objects. No valid algorithm found as 'MD5'.", e);
+        }
+        return hashedContent;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(Utility.generateHash("/gpd-reporting-orgs-enrollment/api/v1/organizations/99999999999", "get"));
     }
 
     public static boolean isNullOrEmpty(String content) {

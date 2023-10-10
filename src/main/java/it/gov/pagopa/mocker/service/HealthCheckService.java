@@ -23,12 +23,16 @@ public class HealthCheckService {
     @Autowired
     private HealthCheckRepository dao;
 
+    @Autowired
+    private CacheService cacheService;
+
     public AppInfo getAppInfo()  {
         return AppInfo.builder()
                 .name(env.getProperty("application.name", String.class))
                 .version(env.getProperty("application.version", String.class))
                 .environment(env.getProperty("application.environment", String.class))
                 .dbConnection(checkDBConnection() ? "up" : "down")
+                .redisConnection(checkRedisConnection() ? "up" : "down")
                 .build();
     }
 
@@ -36,6 +40,14 @@ public class HealthCheckService {
         try {
             return dao.health().isPresent();
         } catch (DataAccessException e) {
+            return false;
+        }
+    }
+
+    private boolean checkRedisConnection() {
+        try {
+            return cacheService.healthCheck();
+        } catch (Exception e) {
             return false;
         }
     }

@@ -1,6 +1,5 @@
 CREATE TABLE mocker.mock_resource (
 	id varchar NOT NULL,
-	resource_id varchar NOT NULL,
 	subsystem_url varchar NOT NULL,
 	resource_url varchar NOT NULL,
 	http_method varchar NOT NULL,
@@ -54,26 +53,4 @@ CREATE TABLE mocker.injectable_parameter (
 	"parameter" varchar NOT NULL,
 	CONSTRAINT injectable_parameter_pk PRIMARY KEY (response_id,"parameter"),
 	CONSTRAINT injectable_parameter_fk FOREIGN KEY (response_id) REFERENCES mocker.mock_response(id) ON DELETE CASCADE ON UPDATE CASCADE
-);
-
-CREATE TABLE mocker.tag (
-	id varchar NOT NULL,
-	"value" varchar NOT NULL,
-	CONSTRAINT tag_pk PRIMARY KEY (id)
-);
-
-CREATE TABLE mocker.mock_resource_tag (
-	mock_resource_id varchar NOT NULL,
-	tag_id varchar NOT NULL,
-	CONSTRAINT mock_resource_tag_pk PRIMARY KEY (mock_resource_id,tag_id),
-	CONSTRAINT mock_resource_tag_mock_resource_fk FOREIGN KEY (mock_resource_id) REFERENCES mocker.mock_resource(id) ON DELETE CASCADE ON UPDATE CASCADE,
-	CONSTRAINT mock_resource_tag_tag_fk FOREIGN KEY (tag_id) REFERENCES mocker.tag(id) ON DELETE CASCADE ON UPDATE CASCADE
-);
-
-CREATE TABLE mocker.mock_rule_tag (
-	mock_rule_id varchar NOT NULL,
-	tag_id varchar NOT NULL,
-	CONSTRAINT mock_rule_tag_pk PRIMARY KEY (mock_rule_id,tag_id),
-	CONSTRAINT mock_rule_tag_mock_rule_fk FOREIGN KEY (mock_rule_id) REFERENCES mocker.mock_rule(id) ON DELETE CASCADE ON UPDATE CASCADE,
-	CONSTRAINT mock_rule_tag_tag_fk FOREIGN KEY (tag_id) REFERENCES mocker.tag(id) ON DELETE CASCADE ON UPDATE CASCADE
 );

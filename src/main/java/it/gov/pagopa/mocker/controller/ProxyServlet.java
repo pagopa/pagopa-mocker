@@ -1,11 +1,11 @@
 package it.gov.pagopa.mocker.controller;
 
+import it.gov.pagopa.mocker.service.ProxyService;
 import it.gov.pagopa.mocker.util.Constants;
 import it.gov.pagopa.mocker.model.AppInfo;
 import it.gov.pagopa.mocker.model.ExtractedRequest;
 import it.gov.pagopa.mocker.model.ExtractedResponse;
 import it.gov.pagopa.mocker.service.HealthCheckService;
-import it.gov.pagopa.mocker.service.MockerService;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class ProxyServlet extends HttpServlet {
 
     @Autowired
-    private MockerService mockerService;
+    private ProxyService proxyService;
 
     @Autowired
     private HealthCheckService healthCheckService;
@@ -75,9 +75,10 @@ public class ProxyServlet extends HttpServlet {
         try {
             /* Extract body from HttpServletRequest request and analyze all. */
             long start = System.nanoTime();
-            String body = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
             log.info(String.format("Trying to mocking the response for the called resource: [%s]", request.getRequestURI()));
-            ExtractedResponse extractedResponse = mockerService.analyze(ExtractedRequest.extract(request, body));
+            String body = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+            /* Extracting mock response */
+            ExtractedResponse extractedResponse = proxyService.extract(ExtractedRequest.extract(request, body));
             /* Update HttpServletResponse response */
             response.setStatus(extractedResponse.getStatus());
             response.setCharacterEncoding("UTF-8");

@@ -18,7 +18,6 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.mock.web.MockHttpServletRequest;
 
@@ -59,7 +58,7 @@ class MockerServiceTest {
 
         // Mocking responses
         MockResourceEntity mockResource = new Gson().fromJson(TestUtil.readJsonFromFile("request/mock_resources/mock_resource_ok.json"), MockResourceEntity.class);
-        when(repository.findByResourceId(anyString())).thenReturn(Optional.ofNullable(mockResource));
+        when(repository.findById(anyString())).thenReturn(Optional.ofNullable(mockResource));
 
         // Executing logic
         ExtractedResponse response = service.analyze(extractedRequest);
@@ -85,7 +84,7 @@ class MockerServiceTest {
 
         // Mocking responses
         MockResourceEntity mockResource = new Gson().fromJson(TestUtil.readJsonFromFile("request/mock_resources/mock_resource_ok.json"), MockResourceEntity.class);
-        when(repository.findByResourceId(anyString())).thenReturn(Optional.ofNullable(mockResource));
+        when(repository.findById(anyString())).thenReturn(Optional.ofNullable(mockResource));
 
         // Executing logic
         ExtractedResponse response = service.analyze(extractedRequest);
@@ -111,7 +110,7 @@ class MockerServiceTest {
 
         // Mocking responses
         MockResourceEntity mockResource = new Gson().fromJson(TestUtil.readJsonFromFile("request/mock_resources/mock_resource_ok_notinjection.json"), MockResourceEntity.class);
-        when(repository.findByResourceId(anyString())).thenReturn(Optional.ofNullable(mockResource));
+        when(repository.findById(anyString())).thenReturn(Optional.ofNullable(mockResource));
 
         // Executing logic
         ExtractedResponse response = service.analyze(extractedRequest);
@@ -137,7 +136,7 @@ class MockerServiceTest {
 
         // Mocking responses
         MockResourceEntity mockResource = new Gson().fromJson(TestUtil.readJsonFromFile("request/mock_resources/mock_resource_onlymainrule.json"), MockResourceEntity.class);
-        when(repository.findByResourceId(anyString())).thenReturn(Optional.ofNullable(mockResource));
+        when(repository.findById(anyString())).thenReturn(Optional.ofNullable(mockResource));
 
         // Executing logic
         ExtractedResponse response = service.analyze(extractedRequest);
@@ -162,7 +161,7 @@ class MockerServiceTest {
 
         // Mocking responses
         MockResourceEntity mockResource = new Gson().fromJson(TestUtil.readJsonFromFile("request/mock_resources/mock_resource_ok_urlcheck.json"), MockResourceEntity.class);
-        when(repository.findByResourceId(anyString())).thenReturn(Optional.ofNullable(mockResource));
+        when(repository.findById(anyString())).thenReturn(Optional.ofNullable(mockResource));
 
         // Executing logic
         ExtractedResponse response = service.analyze(extractedRequest);
@@ -188,7 +187,7 @@ class MockerServiceTest {
 
         // Mocking responses
         MockResourceEntity mockResource = new Gson().fromJson(TestUtil.readJsonFromFile("request/mock_resources/mock_resource_ok_plainstring.json"), MockResourceEntity.class);
-        when(repository.findByResourceId(anyString())).thenReturn(Optional.ofNullable(mockResource));
+        when(repository.findById(anyString())).thenReturn(Optional.ofNullable(mockResource));
 
         // Executing logic
         ExtractedResponse response = service.analyze(extractedRequest);
@@ -214,7 +213,7 @@ class MockerServiceTest {
 
         // Mocking responses
         MockResourceEntity mockResource = new Gson().fromJson(TestUtil.readJsonFromFile("request/mock_resources/mock_resource_xml_ok.json"), MockResourceEntity.class);
-        when(repository.findByResourceId(anyString())).thenReturn(Optional.ofNullable(mockResource));
+        when(repository.findById(anyString())).thenReturn(Optional.ofNullable(mockResource));
 
         // Executing logic
         ExtractedResponse response = service.analyze(extractedRequest);
@@ -240,7 +239,7 @@ class MockerServiceTest {
 
         // Mocking responses
         MockResourceEntity mockResource = new Gson().fromJson(TestUtil.readJsonFromFile("request/mock_resources/mock_resource_ok.json"), MockResourceEntity.class);
-        when(repository.findByResourceId(anyString())).thenReturn(Optional.ofNullable(mockResource));
+        when(repository.findById(anyString())).thenReturn(Optional.ofNullable(mockResource));
 
         // Executing logic
         ExtractedResponse response = service.analyze(extractedRequest);
@@ -265,7 +264,7 @@ class MockerServiceTest {
 
         // Mocking responses
         MockResourceEntity mockResource = new Gson().fromJson(TestUtil.readJsonFromFile("request/mock_resources/mock_resource_xml_ok.json"), MockResourceEntity.class);
-        when(repository.findByResourceId(anyString())).thenReturn(Optional.ofNullable(mockResource));
+        when(repository.findById(anyString())).thenReturn(Optional.ofNullable(mockResource));
 
         // Executing logic
         ExtractedResponse response = service.analyze(extractedRequest);
@@ -289,7 +288,7 @@ class MockerServiceTest {
         String extractedResponseBody = "{ \"message\": \"No valid mock resource is registered at URL [ec-service/api/v1/organizations/77777777777].\" }";
 
         // Mocking responses
-        when(repository.findByResourceId(anyString())).thenReturn(Optional.empty());
+        when(repository.findById(anyString())).thenReturn(Optional.empty());
 
         // Executing logic
         ExtractedResponse response = service.analyze(extractedRequest);
@@ -315,7 +314,7 @@ class MockerServiceTest {
         // Mocking responses
         MockResourceEntity mockResource = new Gson().fromJson(TestUtil.readJsonFromFile("request/mock_resources/mock_resource_onlymainrule.json"), MockResourceEntity.class);
         mockResource.setIsActive(false);
-        when(repository.findByResourceId(anyString())).thenReturn(Optional.ofNullable(mockResource));
+        when(repository.findById(anyString())).thenReturn(Optional.ofNullable(mockResource));
 
         // Executing logic
         ExtractedResponse response = service.analyze(extractedRequest);
@@ -338,7 +337,7 @@ class MockerServiceTest {
         String extractedResponseBody = "{ \"message\": \"An unexpected error occurred while searching for mocked resource.\" }";
 
         // Mocking responses
-        when(repository.findByResourceId(anyString())).thenThrow(new DataRetrievalFailureException("some description"));
+        when(repository.findById(anyString())).thenThrow(new DataRetrievalFailureException("some description"));
 
         // Executing logic
         ExtractedResponse response = service.analyze(extractedRequest);
@@ -361,7 +360,7 @@ class MockerServiceTest {
         String extractedResponseBody = "<response><outcome>KO</outcome><message>An unexpected error occurred while searching for mocked resource.</message></response>";
 
         // Mocking responses
-        when(repository.findByResourceId(anyString())).thenThrow(new DataRetrievalFailureException("some description"));
+        when(repository.findById(anyString())).thenThrow(new DataRetrievalFailureException("some description"));
 
         // Executing logic
         ExtractedResponse response = service.analyze(extractedRequest);

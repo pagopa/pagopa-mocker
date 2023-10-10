@@ -19,11 +19,11 @@ public class ResponseBuilder {
         String body = getDefaultMessageByContentType(message, contentType);
         Map<String, String> headers = request.getHeaders();
         headers.put(Constants.HEADER_CONTENTTYPE, contentType);
-        return buildResponse(500, body, headers);
+        return buildResponse(false, 500, body, headers);
     }
 
-    private static ExtractedResponse buildResponse(int httpStatus, String body, Map<String, String> headers) {
-        return ExtractedResponse.builder().body(body).status(httpStatus).headers(headers).build();
+    private static ExtractedResponse buildResponse(boolean isCacheable, int httpStatus, String body, Map<String, String> headers) {
+        return ExtractedResponse.builder().isCacheable(isCacheable).body(body).status(httpStatus).headers(headers).build();
     }
 
     private static String getDefaultMessageByContentType(String message, String contentType) {
