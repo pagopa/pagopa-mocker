@@ -13,14 +13,14 @@ public class Utility {
     private Utility() {}
 
     public static String generateHash(String... content) {
-        System.out.println("CONTENT: " + content[0] + " " + content[1]);
         String hashedContent = "";
         try {
             StringBuilder builder = new StringBuilder();
             Iterator<String> it = Arrays.stream(content).iterator();
             while (it.hasNext()) {
-                builder.append(it.next());
-                if (it.hasNext()) {
+                String element = it.next();
+                builder.append(element);
+                if (it.hasNext() && !Constants.EMPTY_STRING.equals(element)) {
                     builder.append(Constants.WHITESPACE);
                 }
             }

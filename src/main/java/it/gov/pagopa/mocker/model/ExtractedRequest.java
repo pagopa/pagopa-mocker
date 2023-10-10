@@ -16,6 +16,8 @@ public class ExtractedRequest {
 
     private final String id;
 
+    private final String cacheId;
+
     private final String url;
 
     private final String contentType;
@@ -33,6 +35,8 @@ public class ExtractedRequest {
         this.headers = extractHeaders(request);
         this.contentType = (this.headers.isEmpty() || this.headers.get(Constants.HEADER_CONTENTTYPE) == null) ? Constants.APPLICATION_JSON : this.headers.get(Constants.HEADER_CONTENTTYPE);
         this.queryParameters = extractQueryParameters(request);
+        String soapAction = (this.headers.isEmpty() || this.headers.get(Constants.HEADER_SOAPACTION) == null) ? Constants.EMPTY_STRING : this.headers.get(Constants.HEADER_SOAPACTION).toLowerCase();
+        this.cacheId = Utility.generateHash(this.url, soapAction, request.getMethod().toLowerCase());
     }
 
     public static ExtractedRequest extract(HttpServletRequest request, String body) {
