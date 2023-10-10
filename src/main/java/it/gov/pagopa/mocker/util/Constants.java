@@ -31,9 +31,9 @@ public class Constants {
     public static final String EMPTY_STRING = "";
 
     public static final Set<String> NOT_CACHEABLE_HEADERS_COMMON = Set.of(
-            "authorization", "age", "etag",
+            "authorization", "age", "cache-control", "etag",
             "expires", "if-modified-since", "if-none-match",
-            "last-modified", "user-agent", "request-id"
+            "last-modified", "request-context", "request-id", "user-agent"
     );
 
     public static final Set<String> NOT_CACHEABLE_HEADERS_CLOUDPROVIDER = Set.of(
@@ -43,7 +43,11 @@ public class Constants {
 
     public static final Set<String> NOT_CACHEABLE_HEADERS_CUSTOM = Set.of(
             "x-cache-exclude-headers",
-            "postman-token"
+            // client-related headers: Postman
+            "postman-token",
+            // client-related headers: Google Chrome
+            "sec-ch-ua", "sec-ch-ua-mobile", "sec-ch-ua-platform",
+            "sec-fetch-dest", "sec-fetch-mode", "sec-fetch-site"
     );
 
     public static final Set<String> NOT_CACHEABLE_HEADERS;
