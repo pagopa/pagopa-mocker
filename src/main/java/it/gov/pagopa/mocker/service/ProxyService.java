@@ -27,8 +27,8 @@ public class ProxyService {
         String hashedID = extractedRequest.getId();
         String headers = extractHeaderSubstring(extractedRequest.getHeaders());
         String queryParams = extractQueryParameterSubstring(extractedRequest.getQueryParameters());
-        String body = extractedRequest.getBody();
-        String hashedRequest = Utility.generateHash(headers, queryParams, body);
+        String trimmedBody = extractTrimmedBody(extractedRequest);
+        String hashedRequest = Utility.generateHash(headers, queryParams, trimmedBody);
 
         log.trace(String.format("Extracted headers: [%s] Extracted query parameter: [%s]", headers, queryParams));
         log.debug(String.format("Retrieving mocked response from cache using the id [%s:%s].", hashedID, hashedRequest));
@@ -71,4 +71,13 @@ public class ProxyService {
         return "queryparams:" + formattedQueryParameters.toString() + ";";
     }
 
+    private String extractTrimmedBody(ExtractedRequest extractedRequest) {
+        final String trimmedBody;
+        if (Constants.APPLICATION_JSON.equals(extractedRequest.getContentType())) {
+            trimmedBody = extractedRequest.getBody().replaceAll("\\s+(?=(?:(?:[^\"]*\"){2})*[^\"]*$)", "");
+        } else {
+            trimmedBody = extractedRequest.getBody().replaceAll(">[\\s\\r\\n\\t]*<", "><");
+        }
+        return trimmedBody;
+    }
 }
