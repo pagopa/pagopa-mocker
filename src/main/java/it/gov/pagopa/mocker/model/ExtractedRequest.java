@@ -16,7 +16,7 @@ public class ExtractedRequest {
 
     private final String id;
 
-    private final String url;
+    private String url;
 
     private final String contentType;
 
@@ -28,6 +28,9 @@ public class ExtractedRequest {
 
     private ExtractedRequest(HttpServletRequest request, String body) {
         this.url = request.getRequestURI().replace(Constants.MOCKER_PATH_ROOT, Constants.EMPTY_STRING);
+        if (!this.url.endsWith("/")) {
+            this.url = this.url.concat("/");
+        }
         this.body = body;
         this.headers = extractHeaders(request);
         String soapAction = (this.headers.isEmpty() || this.headers.get(Constants.HEADER_SOAPACTION) == null) ? Constants.EMPTY_STRING : this.headers.get(Constants.HEADER_SOAPACTION);
