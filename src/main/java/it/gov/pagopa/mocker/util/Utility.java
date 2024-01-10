@@ -42,6 +42,13 @@ public class Utility {
         return hashedContent;
     }
 
+    public static void main(String[] args) {
+        /* b5727098f528a971509cabe592f8a466 */
+        System.out.println(Utility.generateHash("/standin-test/v1/", "paVerifyPaymentNotice".toLowerCase(), "post"));
+        System.out.println(Utility.generateHash("/standin-test/v1//", "paverifypaymentnotice", "post"));
+        System.out.println(Utility.generateHash("/standin-test/v1/", "paverifypaymentnotice", ""));
+    }
+
     public static boolean isNullOrEmpty(String content) {
         return content == null || Constants.EMPTY_STRING.equals(content);
     }
