@@ -38,7 +38,7 @@ public class ExtractedRequest {
         this.method = request.getMethod().toLowerCase();
         this.body = body;
         this.headers = extractHeaders(request);
-        this.action = (this.headers.isEmpty() || this.headers.get(Constants.HEADER_SOAPACTION) == null) ? Constants.EMPTY_STRING : this.headers.get(Constants.HEADER_SOAPACTION).toLowerCase();
+        this.action = (this.headers.isEmpty() || this.headers.get(Constants.HEADER_SOAPACTION) == null) ? Constants.EMPTY_STRING : Utility.deEscapeString(this.headers.get(Constants.HEADER_SOAPACTION)).toLowerCase();
         this.id = Utility.generateHash(this.url, action, method);
         this.contentType = (this.headers.isEmpty() || this.headers.get(Constants.HEADER_CONTENTTYPE) == null) ? Constants.APPLICATION_JSON : this.headers.get(Constants.HEADER_CONTENTTYPE);
         this.queryParameters = extractQueryParameters(request);
