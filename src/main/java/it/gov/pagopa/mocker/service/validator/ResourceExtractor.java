@@ -56,7 +56,7 @@ public class ResourceExtractor {
     public UnmarshalledBody extractBodyFields(String body, String contentType) throws IOException, SAXException, JsonSyntaxException {
         UnmarshalledBody unmarshalledBody = null;
         if (!Utility.isNullOrEmpty(body)) {
-            switch (contentType) {
+            switch (contentType.split(";")[0]) {
                 case Constants.APPLICATION_JSON:
                     unmarshalledBody = new JSONUnmarshalledBody(jsonParser.fromJson(body, Map.class));
                     break;
