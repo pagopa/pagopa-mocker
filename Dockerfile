@@ -1,30 +1,27 @@
 #
 # Build stage
 #
-FROM --platform=amd64 maven:3.8.4-jdk-11-slim as mvnbuild
+FROM maven:3.9.3-amazoncorretto-17@sha256:4ab7db7bd5f95e58b0ba1346ff29d6abdd9b73e5fd89c5140edead8b037386ff AS mvnbuild
 WORKDIR /build
 COPY . .
-RUN mvn clean package -Dmaven.test.skip=true
+RUN mvn clean package -DskipTests
+
 
 #
 # Package stage
 #
-FROM --platform=amd64 adoptopenjdk/openjdk11:alpine-jre as bootimg
-COPY --from=mvnbuild /build/target/*.jar application.jar
-RUN java -Djarmode=layertools -jar application.jar extract
+FROM amazoncorretto:17.0.8-alpine3.18@sha256:0c61f12abfb091be48474e836e6802ff3a93e8e038e0460af8c7f447ccbd3901 AS runtime
+VOLUME /tmp
+WORKDIR /app
+COPY --from=mvnbuild /build/target/*.jar /app/app.jar
+
 
 #
 # AppInsight installation stage
 #
-FROM --platform=amd64 ghcr.io/pagopa/docker-base-springboot-openjdk11:v1.0.1@sha256:bbbe948e91efa0a3e66d8f308047ec255f64898e7f9250bdb63985efd3a95dbf
-ADD --chown=spring:spring https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v1.25.1/opentelemetry-javaagent.jar .
-COPY --chown=spring:spring  --from=bootimg dependencies/ ./
-COPY --chown=spring:spring  --from=bootimg snapshot-dependencies/ ./
-# https://github.com/moby/moby/issues/37965#issuecomment-426853382
-RUN true
-COPY --chown=spring:spring  --from=bootimg spring-boot-loader/ ./
-COPY --chown=spring:spring  --from=bootimg application/ ./
+ADD https://github.com/microsoft/ApplicationInsights-Java/releases/download/3.4.15/applicationinsights-agent-3.4.15.jar /app/applicationinsights-agent.jar
+RUN chown -R nobody:nobody /app
 
 EXPOSE 8080
 
-ENTRYPOINT ["java","-javaagent:opentelemetry-javaagent.jar","--enable-preview","org.springframework.boot.loader.JarLauncher"]
+ENTRYPOINT [ "java","-jar","/app/app.jar" ]
