@@ -1,7 +1,7 @@
-INSERT INTO mocker.mock_resource(id, subsystem_url, resource_url, http_method, "name", is_active) VALUES
-('ee743fac8ef18b7915c4213d1de18923', 'gpd-reporting-orgs-enrollment/api/v1', 'organizations/77777777777', 'GET', 'Get enrolled organization with ID 77777777777', true),
-('495983b742d7e4bfc9afcbe002e2f07d', 'gpd-reporting-orgs-enrollment/api/v1', 'organizations/88888888888', 'GET', 'Get enrolled organization with ID 88888888888', true),
-('fb7adf5bce2afe832d407a05054607a7', 'gpd-reporting-orgs-enrollment/api/v1', 'organizations/99999999999', 'GET', 'Get enrolled organization with ID 99999999999', true);
+INSERT INTO mocker.mock_resource(id, subsystem_url, resource_url, action, http_method, "name", is_active) VALUES
+('ee743fac8ef18b7915c4213d1de18923', 'gpd-reporting-orgs-enrollment/api/v1', 'organizations/77777777777', null, 'GET', 'Get enrolled organization with ID 77777777777', true),
+('495983b742d7e4bfc9afcbe002e2f07d', 'gpd-reporting-orgs-enrollment/api/v1', 'organizations/88888888888', null, 'GET', 'Get enrolled organization with ID 88888888888', true),
+('fb7adf5bce2afe832d407a05054607a7', 'gpd-reporting-orgs-enrollment/api/v1', 'organizations/99999999999', null, 'GET', 'Get enrolled organization with ID 99999999999', true);
 
 
 

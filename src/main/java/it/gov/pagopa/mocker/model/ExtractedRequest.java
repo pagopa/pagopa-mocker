@@ -16,7 +16,11 @@ public class ExtractedRequest {
 
     private final String id;
 
-    private final String url;
+    private final String method;
+
+    private final String action;
+
+    private String url;
 
     private final String contentType;
 
@@ -28,9 +32,14 @@ public class ExtractedRequest {
 
     private ExtractedRequest(HttpServletRequest request, String body) {
         this.url = request.getRequestURI().replace(Constants.MOCKER_PATH_ROOT, Constants.EMPTY_STRING);
-        this.id = Utility.generateHash(this.url, request.getMethod().toLowerCase());
+        if (!this.url.endsWith("/")) {
+            this.url = this.url.concat("/");
+        }
+        this.method = request.getMethod().toLowerCase();
         this.body = body;
         this.headers = extractHeaders(request);
+        this.action = (this.headers.isEmpty() || this.headers.get(Constants.HEADER_SOAPACTION) == null) ? Constants.EMPTY_STRING : Utility.deEscapeString(this.headers.get(Constants.HEADER_SOAPACTION)).toLowerCase();
+        this.id = Utility.generateHash(this.url, action, method);
         this.contentType = (this.headers.isEmpty() || this.headers.get(Constants.HEADER_CONTENTTYPE) == null) ? Constants.APPLICATION_JSON : this.headers.get(Constants.HEADER_CONTENTTYPE);
         this.queryParameters = extractQueryParameters(request);
     }
@@ -65,6 +74,6 @@ public class ExtractedRequest {
 
     @Override
     public String toString() {
-        return String.format("[Extracted ID: %s, Content-Type: %s, Request body: %s]", this.id, this.contentType, this.body);
+        return String.format("[Extracted ID: %s, URL: %s, Method: %s, Action: %s, Content-Type: %s, Request body: %s]", this.id, this.url, this.method, this.action, this.contentType, this.body);
     }
 }

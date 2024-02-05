@@ -13,14 +13,14 @@ public class Utility {
     private Utility() {}
 
     public static String generateHash(String... content) {
-        System.out.println("CONTENT: " + content[0] + " " + content[1]);
         String hashedContent = "";
         try {
             StringBuilder builder = new StringBuilder();
             Iterator<String> it = Arrays.stream(content).iterator();
             while (it.hasNext()) {
-                builder.append(it.next());
-                if (it.hasNext()) {
+                String element = it.next();
+                builder.append(element);
+                if (it.hasNext() && !Constants.EMPTY_STRING.equals(element)) {
                     builder.append(Constants.WHITESPACE);
                 }
             }
@@ -42,10 +42,6 @@ public class Utility {
         return hashedContent;
     }
 
-    public static void main(String[] args) {
-        System.out.println(Utility.generateHash("/gpd-reporting-orgs-enrollment/api/v1/organizations/99999999999", "get"));
-    }
-
     public static boolean isNullOrEmpty(String content) {
         return content == null || Constants.EMPTY_STRING.equals(content);
     }
@@ -57,5 +53,9 @@ public class Utility {
             decodedContent = new String(decoded, StandardCharsets.UTF_8);
         }
         return decodedContent;
+    }
+
+    public static String deEscapeString(String value) {
+        return value != null ? value.replace("\"", "") : null;
     }
 }

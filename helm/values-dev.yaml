@@ -4,7 +4,7 @@ microservice-chart:
   fullnameOverride: ""
   image:
     repository: ghcr.io/pagopa/pagopa-mocker
-    tag: "1.1.0"
+    tag: "1.1.0-7-soapaction-cache-optimization"
     pullPolicy: Always
   livenessProbe:
     httpGet:
@@ -63,7 +63,7 @@ microservice-chart:
     WEBSITE_SITE_NAME: 'pagopamocker'
     OTEL_ENDPOINT: "http://otel-collector.elastic-system.svc.cluster.local:4317"
     ENV: 'aks-dev'
-    APP_LOGGING_LEVEL: 'DEBUG'
+    APP_LOGGING_LEVEL: 'TRACE'
     DEFAULT_LOGGING_LEVEL: 'INFO'
     SPRING_DATASOURCE_DRIVER: 'org.postgresql.Driver'
     SPRING_JPA_DB_PLATFORM: 'org.hibernate.dialect.PostgreSQLDialect'
