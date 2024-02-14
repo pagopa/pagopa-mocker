@@ -2,8 +2,8 @@ apiVersion: v2
 name: pagopa-mocker
 description: Microservice that permits to dynamically generate mocked responses
 type: application
-version: 1.26.0
-appVersion: 1.1.1-1-mongodb-migration
+version: 1.27.0
+appVersion: 1.1.1-2-mongodb-migration
 dependencies:
   - name: microservice-chart
     version: 1.21.0
