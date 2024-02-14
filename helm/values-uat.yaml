@@ -4,7 +4,7 @@ microservice-chart:
   fullnameOverride: ""
   image:
     repository: ghcr.io/pagopa/pagopa-mocker
-    tag: "1.1.1"
+    tag: "1.1.1-1-mongodb-migration"
     pullPolicy: Always
   livenessProbe:
     httpGet:
