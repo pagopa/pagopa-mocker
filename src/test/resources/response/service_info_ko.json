@@ -2,5 +2,6 @@
   "name": "mocker",
   "version": "x.y.z",
   "environment": "test",
-  "db_connection": "down"
+  "db_connection": "down",
+  "redis_connection": "down"
 }

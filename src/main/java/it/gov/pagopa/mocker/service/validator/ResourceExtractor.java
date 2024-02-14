@@ -190,11 +190,10 @@ public class ResourceExtractor {
 
     private ExtractedResponse getMockResponse(MockRuleEntity mockRule, UnmarshalledBody unmarshalledBody) {
         MockResponseEntity mockResponse = mockRule.getResponse();
-        List<InjectableParameterEntity> parameters = mockResponse.getParameters();
+        List<String> parameters = mockResponse.getParameters();
         String decodedBody = Utility.decodeBase64(mockResponse.getBody());
         if (parameters != null && unmarshalledBody != null) {
-            for (InjectableParameterEntity parameter : parameters) {
-                String parameterName = parameter.getId().getParameter();
+            for (String parameterName : parameters) {
                 String parameterValue = (String) unmarshalledBody.getFieldValue(parameterName);
                 if (parameterValue == null) {
                     parameterValue = "";
@@ -205,7 +204,7 @@ public class ResourceExtractor {
         }
         Map<String, String> headers = new HashMap<>();
         for (ResponseHeaderEntity headerPair : mockResponse.getHeaders()) {
-            headers.put(headerPair.getId().getHeader(), headerPair.getValue());
+            headers.put(headerPair.getHeader(), headerPair.getValue());
         }
         return ExtractedResponse.builder()
                 .body(decodedBody)
