@@ -4,7 +4,7 @@ microservice-chart:
   fullnameOverride: ""
   image:
     repository: ghcr.io/pagopa/pagopa-mocker
-    tag: "1.1.1"
+    tag: "1.1.1-4-mongodb-migration"
     pullPolicy: Always
   livenessProbe:
     httpGet:
@@ -65,15 +65,10 @@ microservice-chart:
     ENV: 'aks-dev'
     APP_LOGGING_LEVEL: 'DEBUG'
     DEFAULT_LOGGING_LEVEL: 'INFO'
-    SPRING_DATASOURCE_DRIVER: 'org.postgresql.Driver'
-    SPRING_JPA_DB_PLATFORM: 'org.hibernate.dialect.PostgreSQLDialect'
-    DATABASE_SCHEMA: 'mocker'
     REDIS_HOST: "pagopa-d-redis.redis.cache.windows.net"
     REDIS_PORT: "6380"
   envSecret:
-    SPRING_DATASOURCE_URL: 'db-mocker-url'
-    SPRING_DATASOURCE_USERNAME: 'db-mocker-user-name'
-    SPRING_DATASOURCE_PASSWORD: 'db-mocker-user-pwd'
+    MONGODB_CONNECTION_URI: 'db-mocker-uri'
     REDIS_PASSWORD: 'redis-password'
     OTEL_AUTH_BEARER: "otel-auth-bearer"
   keyvault:

@@ -64,6 +64,8 @@ public class ProxyServlet extends HttpServlet {
         try {
             response.setStatus(200);
             response.setContentType(Constants.APPLICATION_JSON);
+            response.setHeader("Access-Control-Allow-Origin", "*");
+            response.setHeader("Access-Control-Allow-Credentials", "*");
             AppInfo info = healthCheckService.getAppInfo();
             response.getWriter().append(info.toString());
         } catch (IOException e) {

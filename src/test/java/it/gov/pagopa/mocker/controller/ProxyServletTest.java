@@ -6,6 +6,7 @@ import it.gov.pagopa.mocker.model.ExtractedRequest;
 import it.gov.pagopa.mocker.model.ExtractedResponse;
 import it.gov.pagopa.mocker.service.HealthCheckService;
 import it.gov.pagopa.mocker.service.MockerService;
+import it.gov.pagopa.mocker.service.ProxyService;
 import it.gov.pagopa.mocker.utility.TestUtil;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,6 +37,9 @@ class ProxyServletTest {
     private ProxyServlet servlet;
 
     @MockBean
+    private ProxyService proxyService;
+
+    @MockBean
     private MockerService mockerService;
 
     @MockBean
@@ -58,6 +62,7 @@ class ProxyServletTest {
                 .version("x.y.z")
                 .environment("test")
                 .dbConnection("up")
+                .redisConnection("up")
                 .build()
         ).when(healthCheckService).getAppInfo();
         MockHttpServletRequest request = getMockedHTTPServletRequest(null, "GET", "/info", "application/json");
@@ -82,6 +87,7 @@ class ProxyServletTest {
                 .version("x.y.z")
                 .environment("test")
                 .dbConnection("down")
+                .redisConnection("down")
                 .build()
         ).when(healthCheckService).getAppInfo();
         MockHttpServletRequest request = getMockedHTTPServletRequest(null, "GET", "/info", "application/json");
