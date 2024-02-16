@@ -19,6 +19,8 @@ public class MockResponseEntity implements Serializable {
 
     private int status;
 
+    private Boolean isCacheable;
+
     private List<String> parameters;
 
     private List<ResponseHeaderEntity> headers;
