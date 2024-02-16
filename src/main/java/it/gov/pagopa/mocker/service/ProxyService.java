@@ -6,6 +6,7 @@ import it.gov.pagopa.mocker.util.Constants;
 import it.gov.pagopa.mocker.util.Utility;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -22,6 +23,9 @@ public class ProxyService {
     @Autowired
     private CacheService cacheService;
 
+    @Value("${mocker.cache.enabled}")
+    private Boolean isCacheEnabled;
+
     public ExtractedResponse extract(ExtractedRequest extractedRequest) {
 
         String hashedID = extractedRequest.getId();
@@ -31,12 +35,17 @@ public class ProxyService {
         String hashedRequest = Utility.generateHash(headers, queryParams, trimmedBody);
 
         log.trace(String.format("Extracted headers: [%s] Extracted query parameter: [%s]", headers, queryParams));
-        log.debug(String.format("Retrieving mocked response from cache using the id [%s:%s].", hashedID, hashedRequest));
-        ExtractedResponse response = cacheService.get(hashedID, hashedRequest);
+        ExtractedResponse response = null;
+        if (Boolean.TRUE.equals(isCacheEnabled)) {
+            log.debug(String.format("Retrieving mocked response from cache using the id [%s:%s].", hashedID, hashedRequest));
+            response = cacheService.get(hashedID, hashedRequest);
+            if (response == null) {
+                log.debug("No mocked response found in cache. Trying to retrieve it from database.");
+            }
+        }
         if (response == null) {
-            log.debug("No mocked response found in cache. Trying to retrieve it from database.");
             response = mockerService.analyze(extractedRequest);
-            if (response != null && response.isCacheable()) {
+            if (response != null && Boolean.TRUE.equals(isCacheEnabled) && response.isCacheable()) {
                 log.debug(String.format("The found mock response will be cached using the id [%s:%s].", hashedID, hashedRequest));
                 cacheService.set(hashedID, hashedRequest, response);
             }

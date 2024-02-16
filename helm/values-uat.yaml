@@ -67,6 +67,7 @@ microservice-chart:
     DEFAULT_LOGGING_LEVEL: 'INFO'
     REDIS_HOST: "pagopa-d-redis.redis.cache.windows.net"
     REDIS_PORT: "6380"
+    MOCKER_CACHE_ENABLED: 'false'
   envSecret:
     MONGODB_CONNECTION_URI: 'db-mocker-uri'
     REDIS_PASSWORD: 'redis-password'

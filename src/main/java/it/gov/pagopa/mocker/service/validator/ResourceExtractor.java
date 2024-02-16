@@ -208,7 +208,7 @@ public class ResourceExtractor {
         }
         return ExtractedResponse.builder()
                 .body(decodedBody)
-                .isCacheable(true)
+                .isCacheable(mockResponse.getIsCacheable() == null || mockResponse.getIsCacheable())
                 .status(mockResponse.getStatus())
                 .headers(headers)
                 .build();
