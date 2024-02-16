@@ -10,14 +10,14 @@ microservice-chart:
     httpGet:
       path: /mocker/info
       port: 8080
-    initialDelaySeconds: 180
+    initialDelaySeconds: 90
     failureThreshold: 6
     periodSeconds: 10
   readinessProbe:
     httpGet:
       path: /mocker/info
       port: 8080
-    initialDelaySeconds: 180
+    initialDelaySeconds: 90
     failureThreshold: 6
     periodSeconds: 10
   deployment:
@@ -25,7 +25,8 @@ microservice-chart:
   service:
     create: true
     type: ClusterIP
-    port: 8080
+    ports:
+      - 8080
   ingress:
     create: true
     host: "weudev.mock.internal.dev.platform.pagopa.it"
@@ -51,7 +52,7 @@ microservice-chart:
     enable: true
     minReplica: 1
     maxReplica: 1
-    pollingInterval: 5 # seconds
+    pollingInterval: 10 # seconds
     cooldownPeriod: 50 # seconds
     triggers:
       - type: cpu
@@ -89,5 +90,5 @@ microservice-chart:
   canaryDelivery:
     deployment:
       image:
-        tag: 1.0.2
+        tag: "0.0.0"
     create: false

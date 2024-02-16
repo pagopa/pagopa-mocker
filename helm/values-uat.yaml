@@ -25,7 +25,8 @@ microservice-chart:
   service:
     create: true
     type: ClusterIP
-    port: 8080
+    ports:
+      - 8080
   ingress:
     create: true
     host: "weudev.mock.internal.dev.platform.pagopa.it"
@@ -45,12 +46,12 @@ microservice-chart:
       memory: "512Mi"
       cpu: "0.25"
     limits:
-      memory: "512Mi"
-      cpu: "0.25"
+      memory: "768Mi"
+      cpu: "0.5"
   autoscaling:
     enable: true
     minReplica: 1
-    maxReplica: 10
+    maxReplica: 2
     pollingInterval: 10 # seconds
     cooldownPeriod: 50 # seconds
     triggers:
@@ -89,5 +90,5 @@ microservice-chart:
   canaryDelivery:
     deployment:
       image:
-        tag: 1.0.2
+        tag: "0.0.0"
     create: false
