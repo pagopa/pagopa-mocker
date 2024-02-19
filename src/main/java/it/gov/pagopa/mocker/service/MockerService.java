@@ -44,7 +44,7 @@ public class MockerService {
     }
 
     private MockResourceEntity getMockResourceFromDB(ExtractedRequest requestData) throws MockerNotRegisteredException, MockerNotActiveException {
-        MockResourceEntity mockResource = dao.findById(requestData.getId()).orElseThrow(() -> new MockerNotRegisteredException(requestData.getUrl()));
+        MockResourceEntity mockResource = dao.findById(requestData.getId()).orElseThrow(() -> new MockerNotRegisteredException(requestData));
         if (Boolean.FALSE.equals(mockResource.getIsActive())) {
             throw new MockerNotActiveException(requestData.getUrl());
         }
