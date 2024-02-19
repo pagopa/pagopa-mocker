@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>it.gov.pagopa</groupId>
 	<artifactId>mocker</artifactId>
-	<version>1.2.2</version>
+	<version>1.2.3</version>
 	<name>pagopa-mocker</name>
 	<description>An HTTP request analyzer for dynamically mocking responses</description>
 	<properties>
