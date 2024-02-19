@@ -13,11 +13,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -28,6 +30,9 @@ public class ProxyServlet extends HttpServlet {
 
     @Autowired
     private HealthCheckService healthCheckService;
+
+    @Value("${mocker.request.accepted-special-headers}")
+    private Set<String> acceptedSpecialHeaders;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -80,7 +85,7 @@ public class ProxyServlet extends HttpServlet {
             log.info(String.format("Trying to mocking the response for the called resource: [%s]", request.getRequestURI()));
             String body = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
             /* Extracting mock response */
-            ExtractedResponse extractedResponse = proxyService.extract(ExtractedRequest.extract(request, body));
+            ExtractedResponse extractedResponse = proxyService.extract(ExtractedRequest.extract(request, body, acceptedSpecialHeaders));
             /* Update HttpServletResponse response */
             response.setStatus(extractedResponse.getStatus());
             response.setCharacterEncoding("UTF-8");

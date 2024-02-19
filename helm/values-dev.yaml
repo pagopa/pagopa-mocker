@@ -69,6 +69,7 @@ microservice-chart:
     REDIS_HOST: "pagopa-d-redis.redis.cache.windows.net"
     REDIS_PORT: "6380"
     MOCKER_CACHE_ENABLED: 'false'
+    MOCKER_REQUEST_SPECIALHEADERS: 'soapaction,x-host-url,x-host-port,x-host-path'
   secretProvider:
     create: true
     envSecrets:

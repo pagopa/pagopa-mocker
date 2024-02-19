@@ -59,15 +59,15 @@ public class ProxyService {
         if (!Utility.isNullOrEmpty(excludeHeadersfromCache)) {
             exclusionInRuntime.addAll(Stream.of(excludeHeadersfromCache.split(","))
                     .map(header -> header.toLowerCase().trim())
-                    .collect(Collectors.toList()));
+                    .toList());
         }
         List<String> formattedHeaders = headers.keySet()
                 .stream()
                 .sorted()
                 .filter(headerKey -> (!Constants.NOT_CACHEABLE_HEADERS.contains(headerKey.toLowerCase()) && !exclusionInRuntime.contains(headerKey.toLowerCase())))
                 .map(headerKey -> String.format("\"%s\":\"%s\"", headerKey, headers.get(headerKey)))
-                .collect(Collectors.toList());
-        return "headers:" + formattedHeaders.toString() + ";";
+                .toList();
+        return "headers:" + formattedHeaders + ";";
     }
 
     private String extractQueryParameterSubstring(Map<String, String> queryParameters) {
