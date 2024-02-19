@@ -22,6 +22,7 @@ import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -52,7 +53,7 @@ class MockerServiceTest {
         // Generating variables
         String body = "{\"name\":\"fake-ec\"}";
         MockHttpServletRequest httpServletRequest = getMockedHTTPServletRequest(body, "POST", "ec-service/api/v1/organizations/77777777777", "application/json");
-        ExtractedRequest extractedRequest = ExtractedRequest.extract(httpServletRequest, body);
+        ExtractedRequest extractedRequest = ExtractedRequest.extract(httpServletRequest, body, Set.of());
         extractedRequest.getHeaders().put("X-Client-Name", "pagopa");
         String extractedResponseBody = "{\"organizationName\": \"fake-ec\",\"organizationOnboardingDate\": \"2023-06-20T15:03:56.862641\"}";
 
@@ -78,7 +79,7 @@ class MockerServiceTest {
         // Generating variables
         String body = "{\"name\":\"another-ec\"}";
         MockHttpServletRequest httpServletRequest = getMockedHTTPServletRequest(body, "POST", "ec-service/api/v1/organizations/77777777777", "application/json");
-        ExtractedRequest extractedRequest = ExtractedRequest.extract(httpServletRequest, body);
+        ExtractedRequest extractedRequest = ExtractedRequest.extract(httpServletRequest, body, Set.of());
         extractedRequest.getHeaders().put("X-Client-Name", "pagopa");
         String extractedResponseBody = "{\"organizationName\": \"parachute organization\",\"organizationOnboardingDate\": \"2023-06-20T15:03:56.862641\"}";
 
@@ -104,7 +105,7 @@ class MockerServiceTest {
         // Generating variables
         String body = "{\"name\":\"fake-ec\",\"uninjectable\":null}";
         MockHttpServletRequest httpServletRequest = getMockedHTTPServletRequest(body, "POST", "ec-service/api/v1/organizations/77777777777", "application/json");
-        ExtractedRequest extractedRequest = ExtractedRequest.extract(httpServletRequest, body);
+        ExtractedRequest extractedRequest = ExtractedRequest.extract(httpServletRequest, body, Set.of());
         extractedRequest.getHeaders().put("X-Client-Name", "pagopa");
         String extractedResponseBody = "{\"organizationName\": \"\",\"organizationOnboardingDate\": \"2023-06-20T15:03:56.862641\"}";
 
@@ -130,7 +131,7 @@ class MockerServiceTest {
         // Generating variables
         String body = "{\"name\":\"another-ec\"}";
         MockHttpServletRequest httpServletRequest = getMockedHTTPServletRequest(body, "POST", "ec-service/api/v1/organizations/77777777777", "application/json");
-        ExtractedRequest extractedRequest = ExtractedRequest.extract(httpServletRequest, body);
+        ExtractedRequest extractedRequest = ExtractedRequest.extract(httpServletRequest, body, Set.of());
         extractedRequest.getHeaders().put("X-Client-Name", "pagopa");
         String extractedResponseBody = "{ \"message\": \"The passed request is not compliant with any rule for the found mock resource with URL [ec-service/api/v1/organizations/77777777777].\" }";
 
@@ -155,7 +156,7 @@ class MockerServiceTest {
         String body = "{\"name\":\"fake-ec\"}";
         MockHttpServletRequest httpServletRequest = getMockedHTTPServletRequest(body, "POST", "ec-service/api/v1/organizations/77777777777", "application/json");
         httpServletRequest.addParameter("param", "value");
-        ExtractedRequest extractedRequest = ExtractedRequest.extract(httpServletRequest, body);
+        ExtractedRequest extractedRequest = ExtractedRequest.extract(httpServletRequest, body, Set.of());
         extractedRequest.getHeaders().put("X-Client-Name", "pagopa");
         String extractedResponseBody = "{\"organizationName\": \"fake-ec\",\"organizationOnboardingDate\": \"2023-06-20T15:03:56.862641\"}";
 
@@ -181,7 +182,7 @@ class MockerServiceTest {
         // Generating variables
         String body = "plain-string";
         MockHttpServletRequest httpServletRequest = getMockedHTTPServletRequest(body, "POST", "ec-service/api/v1/organizations/77777777777", "text/some-exotic-type");
-        ExtractedRequest extractedRequest = ExtractedRequest.extract(httpServletRequest, body);
+        ExtractedRequest extractedRequest = ExtractedRequest.extract(httpServletRequest, body, Set.of());
         extractedRequest.getHeaders().put("X-Client-Name", "pagopa");
         String extractedResponseBody = "{\"message\": \"SOME PLAIN STRING!\"}";
 
@@ -207,7 +208,7 @@ class MockerServiceTest {
         // Generating variables
         String body = "<envelope><body><name>fake-ec</name></body></envelope>";
         MockHttpServletRequest httpServletRequest = getMockedHTTPServletRequest(body, "POST", "ec-service/api/v1/organizations/77777777777", "application/xml");
-        ExtractedRequest extractedRequest = ExtractedRequest.extract(httpServletRequest, body);
+        ExtractedRequest extractedRequest = ExtractedRequest.extract(httpServletRequest, body, Set.of());
         extractedRequest.getHeaders().put("X-Client-Name", "pagopa");
         String extractedResponseBody = TestUtil.readXMLFromFile("response/service_generic.xml").trim();
 
@@ -233,7 +234,7 @@ class MockerServiceTest {
 
         // Generating variables
         MockHttpServletRequest httpServletRequest = getMockedHTTPServletRequest(null, "POST", "ec-service/api/v1/organizations/77777777777", "application/json");
-        ExtractedRequest extractedRequest = ExtractedRequest.extract(httpServletRequest, null);
+        ExtractedRequest extractedRequest = ExtractedRequest.extract(httpServletRequest, null, Set.of());
         extractedRequest.getHeaders().put("X-Client-Name", "pagopa");
         String extractedResponseBody = "{ \"message\": \"The passed request is not compliant with any rule for the found mock resource with URL [ec-service/api/v1/organizations/77777777777].\" }";
 
@@ -258,7 +259,7 @@ class MockerServiceTest {
         // Generating variables
         String body = "<envelope><body><name>fake-ec</body></envelope>";
         MockHttpServletRequest httpServletRequest = getMockedHTTPServletRequest(body, "POST", "ec-service/api/v1/organizations/77777777777", "application/xml");
-        ExtractedRequest extractedRequest = ExtractedRequest.extract(httpServletRequest, body);
+        ExtractedRequest extractedRequest = ExtractedRequest.extract(httpServletRequest, body, Set.of());
         extractedRequest.getHeaders().put("X-Client-Name", "pagopa");
         String extractedResponseBody = "<response><outcome>KO</outcome><message>An error occurred while parsing the request.</message></response>";
 
@@ -283,7 +284,7 @@ class MockerServiceTest {
         // Generating variables
         String body = "{\"name\":\"another-ec\"}";
         MockHttpServletRequest httpServletRequest = getMockedHTTPServletRequest(body, "POST", "ec-service/api/v1/organizations/77777777777", "application/json");
-        ExtractedRequest extractedRequest = ExtractedRequest.extract(httpServletRequest, body);
+        ExtractedRequest extractedRequest = ExtractedRequest.extract(httpServletRequest, body, Set.of());
         extractedRequest.getHeaders().put("X-Client-Name", "pagopa");
         String extractedResponseBody = "{ \"message\": \"No valid mock resource is registered at URL [ec-service/api/v1/organizations/77777777777].\" }";
 
@@ -306,7 +307,7 @@ class MockerServiceTest {
         // Generating variables
         String body = "{\"name\":\"another-ec\"}";
         MockHttpServletRequest httpServletRequest = getMockedHTTPServletRequest(body, "POST", "ec-service/api/v1/organizations/77777777777", "application/json");
-        ExtractedRequest extractedRequest = ExtractedRequest.extract(httpServletRequest, body);
+        ExtractedRequest extractedRequest = ExtractedRequest.extract(httpServletRequest, body, Set.of());
         extractedRequest.getHeaders().put("X-Client-Name", "pagopa");
         String extractedResponseBody = "{ \"message\": \"The mock resource registered at URL [ec-service/api/v1/organizations/77777777777] is currently disabled and cannot be accessed.\" }";
 
@@ -332,7 +333,7 @@ class MockerServiceTest {
         // Generating variables
         String body = "{\"name\":\"another-ec\"}";
         MockHttpServletRequest httpServletRequest = getMockedHTTPServletRequest(body, "POST", "ec-service/api/v1/organizations/77777777777", "application/json");
-        ExtractedRequest extractedRequest = ExtractedRequest.extract(httpServletRequest, body);
+        ExtractedRequest extractedRequest = ExtractedRequest.extract(httpServletRequest, body, Set.of());
         extractedRequest.getHeaders().put("X-Client-Name", "pagopa");
         String extractedResponseBody = "{ \"message\": \"An unexpected error occurred while searching for mocked resource.\" }";
 
@@ -355,7 +356,7 @@ class MockerServiceTest {
         // Generating variables
         String body = "<envelope><body>content</body></envelope>";
         MockHttpServletRequest httpServletRequest = getMockedHTTPServletRequest(body, "POST", "ec-service/api/v1/organizations/77777777777", "application/xml");
-        ExtractedRequest extractedRequest = ExtractedRequest.extract(httpServletRequest, body);
+        ExtractedRequest extractedRequest = ExtractedRequest.extract(httpServletRequest, body, Set.of());
         extractedRequest.getHeaders().put("X-Client-Name", "pagopa");
         String extractedResponseBody = "<response><outcome>KO</outcome><message>An unexpected error occurred while searching for mocked resource.</message></response>";
 
