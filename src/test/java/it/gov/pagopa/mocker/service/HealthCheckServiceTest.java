@@ -33,6 +33,9 @@ class HealthCheckServiceTest {
     private HealthCheckService service;
 
     @MockBean
+    private CacheService cacheService;
+
+    @MockBean
     private HealthCheckRepository repository;
 
     @Mock
@@ -50,6 +53,7 @@ class HealthCheckServiceTest {
 
         // Mocking objects
         when(repository.health()).thenReturn(Optional.of(true));
+        when(cacheService.healthCheck()).thenReturn(true);
 
         doReturn("mocker").when(environment).getProperty("application.name", String.class);
         doReturn("x.y.z").when(environment).getProperty("application.version", String.class);

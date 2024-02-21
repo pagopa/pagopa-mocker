@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.util.Base64;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -113,7 +112,7 @@ class ProxyServletTest {
     void testGetJSON() {
 
         // Mocking objects
-        doReturn(getMockedResponseFromJSON("response/service_get.json", 200)).when(mockerService).analyze(any(ExtractedRequest.class));
+        doReturn(getMockedResponseFromJSON("response/service_get.json", 200)).when(proxyService).extract(any(ExtractedRequest.class));
         MockHttpServletRequest request = getMockedHTTPServletRequest(null, "GET", "/someresource", "application/json");
         MockHttpServletResponse response = new MockHttpServletResponse();
 
@@ -131,7 +130,7 @@ class ProxyServletTest {
     void testGetXML() throws Exception {
 
         // Mocking objects
-        doReturn(getMockedResponseFromXML("response/service_get.xml", 200)).when(mockerService).analyze(any(ExtractedRequest.class));
+        doReturn(getMockedResponseFromXML("response/service_get.xml", 200)).when(proxyService).extract(any(ExtractedRequest.class));
         MockHttpServletRequest request = getMockedHTTPServletRequest(null, "GET", "/someresource", "application/xml");
         MockHttpServletResponse response = new MockHttpServletResponse();
 
@@ -149,7 +148,7 @@ class ProxyServletTest {
     void testPostJSON() {
 
         // Mocking objects
-        doReturn(getMockedResponseFromJSON("response/service_post.json", 201)).when(mockerService).analyze(any(ExtractedRequest.class));
+        doReturn(getMockedResponseFromJSON("response/service_post.json", 201)).when(proxyService).extract(any(ExtractedRequest.class));
         MockHttpServletRequest request = getMockedHTTPServletRequest("request/servlet_post.json", "POST", "/someresource", "application/json");
         MockHttpServletResponse response = new MockHttpServletResponse();
 
@@ -167,8 +166,7 @@ class ProxyServletTest {
     void testPostXML() {
 
         // Mocking objects
-        ExtractedResponse mockedResponse = getMockedResponseFromXML("response/service_post.xml", 201);
-        doReturn(mockedResponse).when(proxyService).extract(any(ExtractedRequest.class));
+        doReturn(getMockedResponseFromXML("response/service_post.xml", 201)).when(proxyService).extract(any(ExtractedRequest.class));
         MockHttpServletRequest request = getMockedHTTPServletRequest("request/servlet_post.json", "POST", "/someresource", "application/xml");
         MockHttpServletResponse response = new MockHttpServletResponse();
 
@@ -186,7 +184,7 @@ class ProxyServletTest {
     void testPutJSON() {
 
         // Mocking objects
-        doReturn(getMockedResponseFromJSON("response/service_put.json", 200)).when(mockerService).analyze(any(ExtractedRequest.class));
+        doReturn(getMockedResponseFromJSON("response/service_put.json", 200)).when(proxyService).extract(any(ExtractedRequest.class));
         MockHttpServletRequest request = getMockedHTTPServletRequest("request/servlet_put.json", "PUT", "/someresource/resourceId", "application/json");
         MockHttpServletResponse response = new MockHttpServletResponse();
 
@@ -204,7 +202,7 @@ class ProxyServletTest {
     void testPutXML() {
 
         // Mocking objects
-        doReturn(getMockedResponseFromXML("response/service_put.xml", 200)).when(mockerService).analyze(any(ExtractedRequest.class));
+        doReturn(getMockedResponseFromXML("response/service_put.xml", 200)).when(proxyService).extract(any(ExtractedRequest.class));
         MockHttpServletRequest request = getMockedHTTPServletRequest("request/servlet_put.xml", "PUT", "/someresource/resourceId", "application/json");
         MockHttpServletResponse response = new MockHttpServletResponse();
 
@@ -222,7 +220,7 @@ class ProxyServletTest {
     void testDeleteJSON() {
 
         // Mocking objects
-        doReturn(getMockedResponseFromJSON(null, 204)).when(mockerService).analyze(any(ExtractedRequest.class));
+        doReturn(getMockedResponseFromJSON(null, 204)).when(proxyService).extract(any(ExtractedRequest.class));
         MockHttpServletRequest request = getMockedHTTPServletRequest(null, "DELETE", "/someresource/resourceId", "application/json");
         MockHttpServletResponse response = new MockHttpServletResponse();
 
@@ -238,7 +236,7 @@ class ProxyServletTest {
     void testDeleteXML() {
 
         // Mocking objects
-        doReturn(getMockedResponseFromXML(null, 204)).when(mockerService).analyze(any(ExtractedRequest.class));
+        doReturn(getMockedResponseFromXML(null, 204)).when(proxyService).extract(any(ExtractedRequest.class));
         MockHttpServletRequest request = getMockedHTTPServletRequest(null, "DELETE", "/someresource/resourceId", "application/xml");
         MockHttpServletResponse response = new MockHttpServletResponse();
 
