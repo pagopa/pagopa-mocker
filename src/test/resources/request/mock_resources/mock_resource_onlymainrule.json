@@ -4,6 +4,7 @@
   "subsystemUrl": "ec-service/api/v1",
   "resourceUrl": "organizations/77777777777",
   "httpMethod": "POST",
+  "specialHeaders": [],
   "isActive": true,
   "rules": [
     {
@@ -37,24 +38,16 @@
         "status": 200,
         "headers": [
           {
-            "id": {
-              "header": "Content-Type"
-            },
+            "header": "Content-Type",
             "value": "application/json"
           },
           {
-            "id": {
-              "header": "X-Powered-By"
-            },
+            "header": "X-Powered-By",
             "value": "Mocker"
           }
         ],
         "parameters": [
-          {
-            "id": {
-              "parameter": "name"
-            }
-          }
+          "name"
         ]
       }
     }

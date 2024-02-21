@@ -20,9 +20,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.IOException;
 import java.util.Base64;
+import java.util.HashSet;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -50,6 +52,9 @@ class ProxyServletTest {
     @SneakyThrows
     void setup() {
         MockitoAnnotations.openMocks(this);
+        // set parameters
+        ReflectionTestUtils.setField(servlet, "acceptedSpecialHeaders", new HashSet<>());
+        ReflectionTestUtils.setField(servlet, "acceptedClients", new HashSet<>());
     }
 
     @Test
@@ -69,7 +74,7 @@ class ProxyServletTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Executing logic
-        servlet.doGet(request, response);
+        servlet.service(request, response);
 
         // Analyzing assertions
         String expected = TestUtil.readJsonFromFile("response/service_info_ok.json");
@@ -94,7 +99,7 @@ class ProxyServletTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Executing logic
-        servlet.doGet(request, response);
+        servlet.service(request, response);
 
         // Analyzing assertions
         String expected = TestUtil.readJsonFromFile("response/service_info_ko.json");
@@ -107,12 +112,12 @@ class ProxyServletTest {
     void testGetJSON() {
 
         // Mocking objects
-        doReturn(getMockedResponseFromJSON("response/service_get.json", 200)).when(mockerService).analyze(any(ExtractedRequest.class));
+        doReturn(getMockedResponseFromJSON("response/service_get.json", 200)).when(proxyService).extract(any(ExtractedRequest.class));
         MockHttpServletRequest request = getMockedHTTPServletRequest(null, "GET", "/someresource", "application/json");
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Executing logic
-        servlet.doGet(request, response);
+        servlet.service(request, response);
 
         // Analyzing assertions
         String expected = TestUtil.readJsonFromFile("response/service_get.json");
@@ -125,12 +130,12 @@ class ProxyServletTest {
     void testGetXML() throws Exception {
 
         // Mocking objects
-        doReturn(getMockedResponseFromXML("response/service_get.xml", 200)).when(mockerService).analyze(any(ExtractedRequest.class));
+        doReturn(getMockedResponseFromXML("response/service_get.xml", 200)).when(proxyService).extract(any(ExtractedRequest.class));
         MockHttpServletRequest request = getMockedHTTPServletRequest(null, "GET", "/someresource", "application/xml");
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Executing logic
-        servlet.doGet(request, response);
+        servlet.service(request, response);
 
         // Analyzing assertions
         String expected = TestUtil.readXMLFromFile("response/service_get.xml").trim();
@@ -143,12 +148,12 @@ class ProxyServletTest {
     void testPostJSON() {
 
         // Mocking objects
-        doReturn(getMockedResponseFromJSON("response/service_post.json", 201)).when(mockerService).analyze(any(ExtractedRequest.class));
+        doReturn(getMockedResponseFromJSON("response/service_post.json", 201)).when(proxyService).extract(any(ExtractedRequest.class));
         MockHttpServletRequest request = getMockedHTTPServletRequest("request/servlet_post.json", "POST", "/someresource", "application/json");
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Executing logic
-        servlet.doPost(request, response);
+        servlet.service(request, response);
 
         // Analyzing assertions
         String expected = TestUtil.readJsonFromFile("response/service_post.json");
@@ -161,12 +166,12 @@ class ProxyServletTest {
     void testPostXML() {
 
         // Mocking objects
-        doReturn(getMockedResponseFromXML("response/service_post.xml", 201)).when(mockerService).analyze(any(ExtractedRequest.class));
+        doReturn(getMockedResponseFromXML("response/service_post.xml", 201)).when(proxyService).extract(any(ExtractedRequest.class));
         MockHttpServletRequest request = getMockedHTTPServletRequest("request/servlet_post.json", "POST", "/someresource", "application/xml");
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Executing logic
-        servlet.doPost(request, response);
+        servlet.service(request, response);
 
         // Analyzing assertions
         String expected = TestUtil.readXMLFromFile("response/service_post.xml").trim();
@@ -179,12 +184,12 @@ class ProxyServletTest {
     void testPutJSON() {
 
         // Mocking objects
-        doReturn(getMockedResponseFromJSON("response/service_put.json", 200)).when(mockerService).analyze(any(ExtractedRequest.class));
+        doReturn(getMockedResponseFromJSON("response/service_put.json", 200)).when(proxyService).extract(any(ExtractedRequest.class));
         MockHttpServletRequest request = getMockedHTTPServletRequest("request/servlet_put.json", "PUT", "/someresource/resourceId", "application/json");
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Executing logic
-        servlet.doPut(request, response);
+        servlet.service(request, response);
 
         // Analyzing assertions
         String expected = TestUtil.readJsonFromFile("response/service_put.json");
@@ -197,12 +202,12 @@ class ProxyServletTest {
     void testPutXML() {
 
         // Mocking objects
-        doReturn(getMockedResponseFromXML("response/service_put.xml", 200)).when(mockerService).analyze(any(ExtractedRequest.class));
+        doReturn(getMockedResponseFromXML("response/service_put.xml", 200)).when(proxyService).extract(any(ExtractedRequest.class));
         MockHttpServletRequest request = getMockedHTTPServletRequest("request/servlet_put.xml", "PUT", "/someresource/resourceId", "application/json");
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Executing logic
-        servlet.doPut(request, response);
+        servlet.service(request, response);
 
         // Analyzing assertions
         String expected = TestUtil.readXMLFromFile("response/service_put.xml").trim();
@@ -215,12 +220,12 @@ class ProxyServletTest {
     void testDeleteJSON() {
 
         // Mocking objects
-        doReturn(getMockedResponseFromJSON(null, 204)).when(mockerService).analyze(any(ExtractedRequest.class));
+        doReturn(getMockedResponseFromJSON(null, 204)).when(proxyService).extract(any(ExtractedRequest.class));
         MockHttpServletRequest request = getMockedHTTPServletRequest(null, "DELETE", "/someresource/resourceId", "application/json");
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Executing logic
-        servlet.doDelete(request, response);
+        servlet.service(request, response);
 
         // Analyzing assertions
         assertEquals(204, response.getStatus());
@@ -231,12 +236,12 @@ class ProxyServletTest {
     void testDeleteXML() {
 
         // Mocking objects
-        doReturn(getMockedResponseFromXML(null, 204)).when(mockerService).analyze(any(ExtractedRequest.class));
+        doReturn(getMockedResponseFromXML(null, 204)).when(proxyService).extract(any(ExtractedRequest.class));
         MockHttpServletRequest request = getMockedHTTPServletRequest(null, "DELETE", "/someresource/resourceId", "application/xml");
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Executing logic
-        servlet.doDelete(request, response);
+        servlet.service(request, response);
 
         // Analyzing assertions
         assertEquals(204, response.getStatus());

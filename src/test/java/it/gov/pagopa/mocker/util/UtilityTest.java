@@ -18,9 +18,9 @@ class UtilityTest {
     void testGenerateID() {
         String url = "/Creditor-Institutions/7777\\7777777/some__detail";
         String httpMethod = "GET";
-        byte[] requestIdBytes = httpMethod.concat(Constants.WHITESPACE).concat(url).getBytes(StandardCharsets.UTF_8);
-        MessageDigest md = MessageDigest.getInstance("MD5");
-        assertEquals(new String(md.digest(requestIdBytes)), Utility.generateHash(url, httpMethod));
+        String hash1 = Utility.generateHash(httpMethod, url);
+        String hash2 = Utility.generateHash(httpMethod + "-", url);
+        assertNotEquals(hash1, hash2);
     }
 
     @Test

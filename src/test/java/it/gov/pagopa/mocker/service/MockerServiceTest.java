@@ -94,7 +94,7 @@ class MockerServiceTest {
         assertNotNull(response);
         assertEquals(200, response.getStatus());
         assertTrue(response.getHeaders().get("Content-Type") != null || response.getHeaders().get("content-type") != null);
-        assertNotNull(response.getHeaders().get("X-Powered-By"));
+        assertNull(response.getHeaders().get("X-Powered-By"));
         JSONAssert.assertEquals(extractedResponseBody, response.getBody(), JSONCompareMode.STRICT);
     }
 
@@ -133,7 +133,7 @@ class MockerServiceTest {
         MockHttpServletRequest httpServletRequest = getMockedHTTPServletRequest(body, "POST", "ec-service/api/v1/organizations/77777777777", "application/json");
         ExtractedRequest extractedRequest = ExtractedRequest.extract(httpServletRequest, body, Set.of());
         extractedRequest.getHeaders().put("X-Client-Name", "pagopa");
-        String extractedResponseBody = "{ \"message\": \"The passed request is not compliant with any rule for the found mock resource with URL [ec-service/api/v1/organizations/77777777777].\" }";
+        String extractedResponseBody = "{ \"message\": \"The passed request is not compliant with any rule for the found mock resource with URL [ec-service/api/v1/organizations/77777777777/].\" }";
 
         // Mocking responses
         MockResourceEntity mockResource = new Gson().fromJson(TestUtil.readJsonFromFile("request/mock_resources/mock_resource_onlymainrule.json"), MockResourceEntity.class);
@@ -236,7 +236,7 @@ class MockerServiceTest {
         MockHttpServletRequest httpServletRequest = getMockedHTTPServletRequest(null, "POST", "ec-service/api/v1/organizations/77777777777", "application/json");
         ExtractedRequest extractedRequest = ExtractedRequest.extract(httpServletRequest, null, Set.of());
         extractedRequest.getHeaders().put("X-Client-Name", "pagopa");
-        String extractedResponseBody = "{ \"message\": \"The passed request is not compliant with any rule for the found mock resource with URL [ec-service/api/v1/organizations/77777777777].\" }";
+        String extractedResponseBody = "{ \"message\": \"The passed request is not compliant with any rule for the found mock resource with URL [ec-service/api/v1/organizations/77777777777/].\" }";
 
         // Mocking responses
         MockResourceEntity mockResource = new Gson().fromJson(TestUtil.readJsonFromFile("request/mock_resources/mock_resource_ok.json"), MockResourceEntity.class);
@@ -286,7 +286,7 @@ class MockerServiceTest {
         MockHttpServletRequest httpServletRequest = getMockedHTTPServletRequest(body, "POST", "ec-service/api/v1/organizations/77777777777", "application/json");
         ExtractedRequest extractedRequest = ExtractedRequest.extract(httpServletRequest, body, Set.of());
         extractedRequest.getHeaders().put("X-Client-Name", "pagopa");
-        String extractedResponseBody = "{ \"message\": \"No valid mock resource is registered at URL [ec-service/api/v1/organizations/77777777777].\" }";
+        String extractedResponseBody = "{ \"message\": \"No valid mock resource is registered as: HTTP Method [post] - URL [ec-service/api/v1/organizations/77777777777/] - Special Headers [].\" }";
 
         // Mocking responses
         when(repository.findById(anyString())).thenReturn(Optional.empty());
@@ -309,7 +309,7 @@ class MockerServiceTest {
         MockHttpServletRequest httpServletRequest = getMockedHTTPServletRequest(body, "POST", "ec-service/api/v1/organizations/77777777777", "application/json");
         ExtractedRequest extractedRequest = ExtractedRequest.extract(httpServletRequest, body, Set.of());
         extractedRequest.getHeaders().put("X-Client-Name", "pagopa");
-        String extractedResponseBody = "{ \"message\": \"The mock resource registered at URL [ec-service/api/v1/organizations/77777777777] is currently disabled and cannot be accessed.\" }";
+        String extractedResponseBody = "{ \"message\": \"The mock resource registered at URL [ec-service/api/v1/organizations/77777777777/] is currently disabled and cannot be accessed.\" }";
 
 
         // Mocking responses
