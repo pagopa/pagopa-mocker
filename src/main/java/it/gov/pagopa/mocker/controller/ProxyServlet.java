@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -89,7 +88,7 @@ public class ProxyServlet extends HttpServlet {
             for (Map.Entry<String, String> headerPair : extractedResponse.getHeaders().entrySet()) {
                 response.setHeader(headerPair.getKey(), headerPair.getValue());
             }
-            response.setContentType(extractedResponse.getHeaders().get("content-type"));
+            addContentType(response, extractedRequest, extractedResponse);
             response.setHeader("X-Powered-By", "Mocker");
             if (acceptedClients.contains(extractedRequest.getHeaders().get("x-source-client"))) {
                 addCorsAllowHeaders(response);
@@ -108,5 +107,13 @@ public class ProxyServlet extends HttpServlet {
         response.setHeader("Access-Control-Allow-Credentials", "*");
         response.setHeader("Access-Control-Allow-Headers", "*");
         response.setHeader("Access-Control-Expose-Headers", "*");
+    }
+
+    private void addContentType(HttpServletResponse response, ExtractedRequest extractedRequest, ExtractedResponse extractedResponse) {
+        String contentType = extractedResponse.getHeaders().get("content-type");
+        if (contentType == null) {
+            contentType = extractedRequest.getContentType();
+        }
+        response.setContentType(contentType);
     }
 }
