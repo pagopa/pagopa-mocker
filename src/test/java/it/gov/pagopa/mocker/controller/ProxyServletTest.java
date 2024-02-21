@@ -20,10 +20,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.IOException;
 import java.util.Base64;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -50,6 +53,9 @@ class ProxyServletTest {
     @SneakyThrows
     void setup() {
         MockitoAnnotations.openMocks(this);
+        // set parameters
+        ReflectionTestUtils.setField(servlet, "acceptedSpecialHeaders", new HashSet<>());
+        ReflectionTestUtils.setField(servlet, "acceptedClients", new HashSet<>());
     }
 
     @Test
@@ -69,7 +75,7 @@ class ProxyServletTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Executing logic
-        servlet.doGet(request, response);
+        servlet.service(request, response);
 
         // Analyzing assertions
         String expected = TestUtil.readJsonFromFile("response/service_info_ok.json");
@@ -94,7 +100,7 @@ class ProxyServletTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Executing logic
-        servlet.doGet(request, response);
+        servlet.service(request, response);
 
         // Analyzing assertions
         String expected = TestUtil.readJsonFromFile("response/service_info_ko.json");
@@ -112,7 +118,7 @@ class ProxyServletTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Executing logic
-        servlet.doGet(request, response);
+        servlet.service(request, response);
 
         // Analyzing assertions
         String expected = TestUtil.readJsonFromFile("response/service_get.json");
@@ -130,7 +136,7 @@ class ProxyServletTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Executing logic
-        servlet.doGet(request, response);
+        servlet.service(request, response);
 
         // Analyzing assertions
         String expected = TestUtil.readXMLFromFile("response/service_get.xml").trim();
@@ -148,7 +154,7 @@ class ProxyServletTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Executing logic
-        servlet.doPost(request, response);
+        servlet.service(request, response);
 
         // Analyzing assertions
         String expected = TestUtil.readJsonFromFile("response/service_post.json");
@@ -161,12 +167,13 @@ class ProxyServletTest {
     void testPostXML() {
 
         // Mocking objects
-        doReturn(getMockedResponseFromXML("response/service_post.xml", 201)).when(mockerService).analyze(any(ExtractedRequest.class));
+        ExtractedResponse mockedResponse = getMockedResponseFromXML("response/service_post.xml", 201);
+        doReturn(mockedResponse).when(proxyService).extract(any(ExtractedRequest.class));
         MockHttpServletRequest request = getMockedHTTPServletRequest("request/servlet_post.json", "POST", "/someresource", "application/xml");
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Executing logic
-        servlet.doPost(request, response);
+        servlet.service(request, response);
 
         // Analyzing assertions
         String expected = TestUtil.readXMLFromFile("response/service_post.xml").trim();
@@ -184,7 +191,7 @@ class ProxyServletTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Executing logic
-        servlet.doPut(request, response);
+        servlet.service(request, response);
 
         // Analyzing assertions
         String expected = TestUtil.readJsonFromFile("response/service_put.json");
@@ -202,7 +209,7 @@ class ProxyServletTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Executing logic
-        servlet.doPut(request, response);
+        servlet.service(request, response);
 
         // Analyzing assertions
         String expected = TestUtil.readXMLFromFile("response/service_put.xml").trim();
@@ -220,7 +227,7 @@ class ProxyServletTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Executing logic
-        servlet.doDelete(request, response);
+        servlet.service(request, response);
 
         // Analyzing assertions
         assertEquals(204, response.getStatus());
@@ -236,7 +243,7 @@ class ProxyServletTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Executing logic
-        servlet.doDelete(request, response);
+        servlet.service(request, response);
 
         // Analyzing assertions
         assertEquals(204, response.getStatus());
