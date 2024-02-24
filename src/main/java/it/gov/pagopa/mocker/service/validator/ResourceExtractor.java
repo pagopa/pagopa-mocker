@@ -133,12 +133,9 @@ public class ResourceExtractor {
     private boolean isBodyRequestSatisfyingRequirements(MockConditionEntity mockCondition, UnmarshalledBody unmarshalledBody, ExtractedRequest request) throws MockerNotCompliantRequestException {
         log.debug(String.format("Evaluating the mock condition: [%s]: [%s %s %s].", mockCondition.getId(), mockCondition.getFieldName(), mockCondition.getConditionType(), mockCondition.getConditionValue()));
         boolean isValid = false;
-        if (unmarshalledBody == null) {
-            throw new MockerNotCompliantRequestException(request.getUrl());
-        } else {
+        if (unmarshalledBody != null) {
             switch (mockCondition.getAnalyzedContentType()) {
-                case JSON:
-                case XML:
+                case JSON, XML:
                     isValid = isFieldCompliantToCondition(mockCondition, unmarshalledBody);
                     break;
                 case STRING:
