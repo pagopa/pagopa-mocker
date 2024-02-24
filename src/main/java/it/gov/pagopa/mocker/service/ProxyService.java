@@ -61,6 +61,7 @@ public class ProxyService {
                     .map(header -> header.toLowerCase().trim())
                     .toList());
         }
+        headers.putIfAbsent("content-type", "text/plain");
         List<String> formattedHeaders = headers.keySet()
                 .stream()
                 .sorted()
