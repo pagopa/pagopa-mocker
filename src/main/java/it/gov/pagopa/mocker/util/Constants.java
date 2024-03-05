@@ -32,6 +32,8 @@ public class Constants {
 
     public static final String EMPTY_STRING = "";
 
+    public static final String SCRIPTEXECUTOR_FUNCTION_SUFFIX = "__execute";
+
     public static final Set<String> NOT_CACHEABLE_HEADERS_COMMON = Set.of(
             "authorization", "age", "cache-control", "etag",
             "expires", "if-modified-since", "if-none-match",

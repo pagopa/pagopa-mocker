@@ -28,4 +28,6 @@ public class MockRuleEntity implements Serializable {
     private List<MockConditionEntity> conditions;
 
     private MockResponseEntity response;
+
+    private ScriptingEntity scripting;
 }

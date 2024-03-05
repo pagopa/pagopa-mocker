@@ -5,7 +5,9 @@ import com.google.gson.JsonSyntaxException;
 import it.gov.pagopa.mocker.entity.*;
 import it.gov.pagopa.mocker.exception.MockerNotCompliantRequestException;
 import it.gov.pagopa.mocker.exception.MockerParseRequestException;
+import it.gov.pagopa.mocker.exception.MockerScriptExecutionException;
 import it.gov.pagopa.mocker.model.JSONUnmarshalledBody;
+import it.gov.pagopa.mocker.service.scripting.ScriptExecutor;
 import it.gov.pagopa.mocker.util.Constants;
 import it.gov.pagopa.mocker.util.Utility;
 import it.gov.pagopa.mocker.util.ConditionValidator;
@@ -15,6 +17,7 @@ import it.gov.pagopa.mocker.model.ExtractedResponse;
 import it.gov.pagopa.mocker.model.UnmarshalledBody;
 import it.gov.pagopa.mocker.model.enumeration.ConditionType;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.xml.sax.SAXException;
@@ -31,6 +34,9 @@ import java.util.stream.Collectors;
 @Transactional
 @Slf4j
 public class ResourceExtractor {
+
+    @Autowired
+    private ScriptExecutor scriptExecutor;
 
     private final XMLParser xmlParser;
 
@@ -187,18 +193,21 @@ public class ResourceExtractor {
 
     private ExtractedResponse getMockResponse(MockRuleEntity mockRule, UnmarshalledBody unmarshalledBody) {
         MockResponseEntity mockResponse = mockRule.getResponse();
+        Map<String, String> dynamicParameters = executeScript(mockRule, unmarshalledBody);
         List<String> parameters = mockResponse.getParameters();
         String decodedBody = Utility.decodeBase64(mockResponse.getBody());
+        //
         if (parameters != null && unmarshalledBody != null) {
             for (String parameterName : parameters) {
                 String parameterValue = (String) unmarshalledBody.getFieldValue(parameterName);
-                if (parameterValue == null) {
-                    parameterValue = "";
-                }
-                String regex = "\\$\\{" + parameterName.replace(".","\\.") + "\\}";
-                decodedBody = decodedBody.replaceAll(regex, parameterValue);
+                decodedBody = injectParameterValueInDecodedBody(decodedBody, parameterName, parameterValue);
             }
         }
+        //
+        for (Map.Entry<String, String> parameter : dynamicParameters.entrySet()) {
+            decodedBody = injectParameterValueInDecodedBody(decodedBody, "dynamic." + parameter.getKey(), parameter.getValue());
+        }
+        //
         Map<String, String> headers = new HashMap<>();
         for (ResponseHeaderEntity headerPair : mockResponse.getHeaders()) {
             headers.put(headerPair.getHeader(), headerPair.getValue());
@@ -209,5 +218,36 @@ public class ResourceExtractor {
                 .status(mockResponse.getStatus())
                 .headers(headers)
                 .build();
+    }
+
+    private Map<String, String> executeScript(MockRuleEntity mockRule, UnmarshalledBody unmarshalledBody) {
+        Map<String, String> dynamicResultParameters = new HashMap<>();
+        ScriptingEntity scriptingEntity = mockRule.getScripting();
+        if (scriptingEntity != null && Boolean.TRUE.equals(scriptingEntity.getIsActive())) {
+
+            try {
+                Map<String, Object> parameters = new HashMap<>();
+                for (NameValueEntity parameter : scriptingEntity.getParameters()) {
+                    String parameterValue = parameter.getValue();
+                    if (parameter.getValue().startsWith("${")) {
+                        String injectedField = parameter.getValue().replace("${", "").replace("}", "");
+                        parameterValue = unmarshalledBody.getFieldValue(injectedField).toString();
+                    }
+                    parameters.put(parameter.getName(), parameterValue);
+                }
+                dynamicResultParameters = scriptExecutor.execute(scriptingEntity.getScriptName(), parameters);
+            } catch (MockerScriptExecutionException e) {
+                log.warn("The execution of the scripts ended unsuccessfully. Returning an empty map of result fields.");
+            }
+        }
+        return dynamicResultParameters;
+    }
+
+    private String injectParameterValueInDecodedBody(String decodedBody, String name, String value) {
+        if (value != null) {
+            String regex = "\\$\\{" + name.replace(".", "\\.") + "\\}";
+            decodedBody = decodedBody.replaceAll(regex, value);
+        }
+        return decodedBody;
     }
 }
