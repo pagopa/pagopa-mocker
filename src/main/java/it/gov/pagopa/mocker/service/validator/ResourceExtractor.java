@@ -231,7 +231,8 @@ public class ResourceExtractor {
                     String parameterValue = parameter.getValue();
                     if (parameter.getValue().startsWith("${")) {
                         String injectedField = parameter.getValue().replace("${", "").replace("}", "");
-                        parameterValue = unmarshalledBody.getFieldValue(injectedField).toString();
+                        Object fieldValue = unmarshalledBody.getFieldValue(injectedField);
+                        parameterValue = fieldValue != null ? fieldValue.toString() : "undefined";
                     }
                     parameters.put(parameter.getName(), parameterValue);
                 }
