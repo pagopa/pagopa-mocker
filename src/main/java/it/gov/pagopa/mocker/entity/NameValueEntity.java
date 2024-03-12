@@ -11,7 +11,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
-public class SpecialRequestHeaderEntity implements Serializable {
+public class NameValueEntity implements Serializable {
 
     private String name;
 
