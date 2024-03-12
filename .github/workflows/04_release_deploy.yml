@@ -3,8 +3,6 @@ name: Release And Deploy
 # Controls when the workflow will run
 on:
   pull_request:
-    branches:
-      - main
     types: [ closed ]
 
   # Allows you to run this workflow manually from the Actions tab
@@ -17,28 +15,20 @@ on:
         options:
           - dev
           - uat
-          - prod
-      semver:
+      version:
         required: false
         type: choice
         description: Select the version
         options:
           - ''
-          - skip
-          - promote
-          - patch
+          - skip_or_promote
           - new_release
           - breaking_change
-
-  workflow_call:
-    inputs:
-      environment:
-        required: true
-        type: string
-      semver:
-        required: true
-        type: string
-        default: skip
+      beta:
+        required: false
+        type: boolean
+        description: deploy beta version on AKS
+        default: false
 
 permissions:
   packages: write
@@ -54,20 +44,52 @@ jobs:
     name: Setup
     runs-on: ubuntu-latest
     outputs:
-      semver: ${{ steps.semver_setup.outputs.semver }}
-      environment: ${{ steps.semver_setup.outputs.environment }}
+      semver: ${{ steps.get_semver.outputs.semver }}
+      environment: ${{ steps.get_env.outputs.environment }}
     steps:
-      - name: Semver setup
-        id: semver_setup
-        uses: pagopa/github-actions-template/nodo5-semver-setup@ce252c8501c9242bd6045f7cdd650736b2f38777
-        with:
-          semver: ${{ inputs.semver }}
+      - name: pull request rejected
+        if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged != true
+        run: |
+          echo "❌ PR was closed without a merge"
+          exit 1
+
+      # Set Semvar
+      - run: echo "SEMVER=patch" >> $GITHUB_ENV
+
+      - if: ${{ (github.event.pull_request.merged && contains(github.event.pull_request.labels.*.name, 'breaking-change')) }}
+        run: echo "SEMVER=major" >> $GITHUB_ENV
+
+      # force semver if dev, !=main or skip release
+      - if: ${{ inputs.version == 'new_release' }}
+        run: echo "SEMVER=minor" >> $GITHUB_ENV
+
+      - if: ${{ inputs.version == 'breaking_change' }}
+        run: echo "SEMVER=major" >> $GITHUB_ENV
+
+      - if: ${{ github.ref_name != 'main' }}
+        run: echo "SEMVER=buildNumber" >> $GITHUB_ENV
+
+      - if: ${{ inputs.version == 'skip_or_promote' }}
+        run: echo "SEMVER=skip" >> $GITHUB_ENV
+
+      - id: get_semver
+        name: Set Output
+        run: echo "semver=${{env.SEMVER}}" >> $GITHUB_OUTPUT
+
+      # Set Environment
+      - run: echo "ENVIRNOMENT=${{ inputs.environment}}" >> $GITHUB_ENV
+
+      - if: ${{ inputs.environment == null }}
+        run: echo "ENVIRNOMENT=dev" >> $GITHUB_ENV
+
+      - id: get_env
+        name: Set Output
+        run: echo "environment=${{env.ENVIRNOMENT}}" >> $GITHUB_OUTPUT
 
   release:
-    needs: [setup]
     name: Create a New Release
     runs-on: ubuntu-latest
-    if: ${{ needs.setup.outputs.semver != 'skip' }}
+    needs: [ setup ]
     outputs:
       version: ${{ steps.release.outputs.version }}
     steps:
@@ -90,7 +112,6 @@ jobs:
         id: semver
         uses: pagopa/github-actions-template/ghcr-build-push@v1.5.4
         with:
-          branch: ${{ github.ref_name}}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ needs.release.outputs.version }}
 
@@ -98,30 +119,7 @@ jobs:
     name: Deploy on AKS
     needs: [ setup, release, image ]
     if: ${{ always() && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled') }}
-    strategy:
-      matrix:
-        environment: [ dev, uat, prod ]
     uses: ./.github/workflows/04h_deploy_with_github_runner.yml
     with:
-      environment: ${{ matrix.environment }}
-      target: ${{ needs.setup.outputs.environment }}
+      environment: ${{ needs.setup.outputs.environment }}
     secrets: inherit
-
-#  notify:
-#    name: Notify
-#    needs: [ setup, release, deploy_aks ]
-#    runs-on: ubuntu-latest
-#    if: always()
-#    steps:
-#      - name: Report Status
-#        if: always()
-#        uses: ravsamhq/notify-slack-action@v2
-#        with:
-#          status: ${{ needs.deploy_aks.result }}
-#          token: ${{ secrets.GITHUB_TOKEN }}
-#          notification_title: 'New Release on ${{ needs.setup.outputs.environment }} for ${{ needs.release.outputs.version }} has {status_message}'
-#          message_format: '{emoji} <{run_url}|{workflow}> {status_message} in <{repo_url}|{repo}>'
-#          footer: 'Linked to <{workflow_url}| workflow file>'
-#          icon_success: ':white_check_mark:'
-#        env:
-#          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
