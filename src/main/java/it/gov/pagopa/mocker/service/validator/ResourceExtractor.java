@@ -224,15 +224,18 @@ public class ResourceExtractor {
         Map<String, String> dynamicResultParameters = new HashMap<>();
         ScriptingEntity scriptingEntity = mockRule.getScripting();
         if (scriptingEntity != null && Boolean.TRUE.equals(scriptingEntity.getIsActive())) {
-
             try {
                 Map<String, Object> parameters = new HashMap<>();
                 for (NameValueEntity parameter : scriptingEntity.getParameters()) {
                     String parameterValue = parameter.getValue();
                     if (parameter.getValue().startsWith("${")) {
                         String injectedField = parameter.getValue().replace("${", "").replace("}", "");
-                        Object fieldValue = unmarshalledBody.getFieldValue(injectedField);
-                        parameterValue = fieldValue != null ? fieldValue.toString() : "undefined";
+                        if (unmarshalledBody != null) {
+                            Object fieldValue = unmarshalledBody.getFieldValue(injectedField);
+                            parameterValue = fieldValue != null ? fieldValue.toString() : "undefined";
+                        } else {
+                            parameterValue = "undefined";
+                        }
                     }
                     parameters.put(parameter.getName(), parameterValue);
                 }
@@ -245,9 +248,13 @@ public class ResourceExtractor {
     }
 
     private String injectParameterValueInDecodedBody(String decodedBody, String name, String value) {
-        if (value != null) {
-            String regex = "\\$\\{" + name.replace(".", "\\.") + "\\}";
-            decodedBody = decodedBody.replaceAll(regex, value);
+        try {
+            if (value != null) {
+                String regex = "\\$\\{" + name.replace(".", "\\.") + "\\}";
+                decodedBody = decodedBody.replaceAll(regex, value);
+            }
+        } catch (IllegalArgumentException e) {
+            log.warn(String.format("The injection of the value of [%s] parameter in decoded body was not executed correctly.", name));
         }
         return decodedBody;
     }
