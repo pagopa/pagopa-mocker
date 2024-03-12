@@ -1,3 +1,16 @@
+data "azurerm_storage_account" "tf_storage_account" {
+  name                = "pagopainfraterraform${var.env}"
+  resource_group_name = "io-infra-rg"
+}
+
+data "azurerm_resource_group" "dashboards" {
+  name = "dashboards"
+}
+
+data "azurerm_resource_group" "apim_resource_group" {
+  name = "${local.product}-api-rg"
+}
+
 data "azurerm_kubernetes_cluster" "aks" {
   name                = local.aks_cluster.name
   resource_group_name = local.aks_cluster.resource_group_name
@@ -36,4 +49,9 @@ data "azurerm_key_vault_secret" "key_vault_cucumber_token" {
 data "azurerm_key_vault_secret" "key_vault_integration_test_subkey" {
   name         = "integration-test-subkey"
   key_vault_id = data.azurerm_key_vault.key_vault.id
+}
+
+data "azurerm_user_assigned_identity" "identity_cd" {
+  name                = "${local.product}-${local.domain}-01-github-cd-identity"
+  resource_group_name = "${local.product}-identity-rg"
 }
