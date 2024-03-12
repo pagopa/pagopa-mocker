@@ -4,7 +4,7 @@ microservice-chart:
   fullnameOverride: ""
   image:
     repository: ghcr.io/pagopa/pagopa-mocker
-    tag: "1.2.7-1-feat-scripting-on-mock-rule"
+    tag: "1.3.0"
     pullPolicy: Always
   livenessProbe:
     httpGet:
