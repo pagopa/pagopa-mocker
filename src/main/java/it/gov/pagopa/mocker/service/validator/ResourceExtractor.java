@@ -52,7 +52,7 @@ public class ResourceExtractor {
         try {
             UnmarshalledBody unmarshalledBody = extractBodyFields(requestData.getBody(), requestData.getContentType());
             MockRuleEntity mockRule = getValidMockRule(mockResource, requestData, unmarshalledBody);
-            extractedResponse = getMockResponse(mockRule, unmarshalledBody);
+            extractedResponse = getMockResponse(mockRule, unmarshalledBody, requestData);
         } catch (IOException | SAXException | JsonSyntaxException e) {
             throw new MockerParseRequestException(e);
         }
@@ -191,15 +191,22 @@ public class ResourceExtractor {
     }
 
 
-    private ExtractedResponse getMockResponse(MockRuleEntity mockRule, UnmarshalledBody unmarshalledBody) {
+    private ExtractedResponse getMockResponse(MockRuleEntity mockRule, UnmarshalledBody unmarshalledBody, ExtractedRequest requestData) {
         MockResponseEntity mockResponse = mockRule.getResponse();
         Map<String, String> dynamicParameters = executeScript(mockRule, unmarshalledBody);
         List<String> parameters = mockResponse.getParameters();
         String decodedBody = Utility.decodeBase64(mockResponse.getBody());
-        //
+        // injecting request body's fields in response
         if (parameters != null && unmarshalledBody != null) {
             for (String parameterName : parameters) {
                 String parameterValue = (String) unmarshalledBody.getFieldValue(parameterName);
+                decodedBody = injectParameterValueInDecodedBody(decodedBody, parameterName, parameterValue);
+            }
+        }
+        // injecting request query parameters in response
+        if (parameters != null && requestData.getQueryParameters() != null) {
+            for (String parameterName : parameters) {
+                String parameterValue = requestData.getQueryParameters().get(parameterName);
                 decodedBody = injectParameterValueInDecodedBody(decodedBody, parameterName, parameterValue);
             }
         }
