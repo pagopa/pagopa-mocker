@@ -55,3 +55,8 @@ data "azurerm_user_assigned_identity" "identity_cd" {
   name                = "${local.product}-${local.domain}-01-github-cd-identity"
   resource_group_name = "${local.product}-identity-rg"
 }
+
+data "azurerm_user_assigned_identity" "workload_identity_clientid" {
+  name                = "shared-workload-identity"
+  resource_group_name = local.aks_cluster.resource_group_name
+}
