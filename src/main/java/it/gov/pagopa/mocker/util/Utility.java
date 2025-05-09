@@ -2,6 +2,7 @@ package it.gov.pagopa.mocker.util;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -57,5 +58,17 @@ public class Utility {
 
     public static String deEscapeString(String value) {
         return value != null ? value.replace("\"", "") : null;
+    }
+
+    public static String formatValue(Object value) {
+        String formattedValue;
+        if (value instanceof String stringValue) {
+            formattedValue = stringValue;
+        } else if (value instanceof Double doubleValue) {
+            formattedValue = BigDecimal.valueOf(doubleValue).stripTrailingZeros().toPlainString();
+        } else {
+            formattedValue = (String) value;
+        }
+        return formattedValue;
     }
 }

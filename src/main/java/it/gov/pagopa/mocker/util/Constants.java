@@ -1,5 +1,6 @@
 package it.gov.pagopa.mocker.util;
 
+import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;

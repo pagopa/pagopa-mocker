@@ -198,15 +198,19 @@ public class ResourceExtractor {
         String decodedBody = Utility.decodeBase64(mockResponse.getBody());
         // injecting request body's fields in response
         if (parameters != null && unmarshalledBody != null) {
-            for (String parameterName : parameters) {
-                String parameterValue = (String) unmarshalledBody.getFieldValue(parameterName);
-                decodedBody = injectParameterValueInDecodedBody(decodedBody, parameterName, parameterValue);
+            if (parameters.contains("request")) {
+                decodedBody = injectParameterValueInDecodedBody(decodedBody, "request", requestData.getBody());
+            } else {
+                for (String parameterName : parameters) {
+                    String parameterValue = Utility.formatValue(unmarshalledBody.getFieldValue(parameterName));
+                    decodedBody = injectParameterValueInDecodedBody(decodedBody, parameterName, parameterValue);
+                }
             }
         }
         // injecting request query parameters in response
         if (parameters != null && requestData.getQueryParameters() != null) {
             for (String parameterName : parameters) {
-                String parameterValue = requestData.getQueryParameters().get(parameterName);
+                String parameterValue = Utility.formatValue(requestData.getQueryParameters().get(parameterName));
                 decodedBody = injectParameterValueInDecodedBody(decodedBody, parameterName, parameterValue);
             }
         }
