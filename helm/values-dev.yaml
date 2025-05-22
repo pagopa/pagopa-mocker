@@ -71,15 +71,13 @@ microservice-chart:
     REDIS_PORT: "6380"
     MOCKER_CACHE_ENABLED: 'false'
     MOCKER_REQUEST_SPECIALHEADERS: 'soapaction,x-host-url,x-host-port,x-host-path'
-  secretProvider:
-    create: true
-    envSecrets:
-      MONGODB_CONNECTION_URI: 'db-mocker-uri'
-      REDIS_PASSWORD: 'redis-password'
-      OTEL_AUTH_BEARER: "otel-auth-bearer"
-    keyvault:
-      name: "pagopa-d-mock-kv"
-      tenantId: "7788edaf-0346-4068-9d79-c868aed15b3d"
+  envSecret:
+    MONGODB_CONNECTION_URI: 'db-mocker-uri'
+    REDIS_PASSWORD: 'redis-password'
+    OTEL_AUTH_BEARER: "otel-auth-bearer"
+  keyvault:
+    name: "pagopa-d-mock-kv"
+    tenantId: "7788edaf-0346-4068-9d79-c868aed15b3d"
   tmpVolumeMount:
     create: true
   nodeSelector: {}
