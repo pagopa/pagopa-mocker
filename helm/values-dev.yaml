@@ -31,7 +31,7 @@ microservice-chart:
   ingress:
     create: true
     host: "weudev.mock.internal.dev.platform.pagopa.it"
-    path: /pagopa-mocker(/|$)(.*)
+    path: /pagopa-mocker2(/|$)(.*)
   serviceAccount:
     create: false
     annotations: {}
