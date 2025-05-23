@@ -35,5 +35,5 @@ jobs:
           cluster_name: ${{ vars.CLUSTER_NAME }}
           resource_group: ${{ vars.CLUSTER_RESOURCE_GROUP }}
           app_name: ${{ env.APP_NAME }}
-          helm_upgrade_options: "--debug --set microservice-chart.azure.workloadIdentityClientId=6f3f33c2-8385-4b35-ac6e-b78017e40307"
+          helm_upgrade_options: "--debug --set microservice-chart.azure.workloadIdentityClientId=${{vars.WORKLOAD_IDENTITY_ID}}"
           timeout: "10m0s"
