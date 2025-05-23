@@ -34,9 +34,11 @@ microservice-chart:
     path: /pagopa-mocker-test(/|$)(.*)
   serviceAccount:
     create: false
-    annotations: {}
+    annotations:
+      azure.workload.identity/client-id: "6f3f33c2-8385-4b35-ac6e-b78017e40307"
     name: "mock-workload-identity"
-  podAnnotations: {}
+  podAnnotations:
+    azure.workload.identity/client-id: "6f3f33c2-8385-4b35-ac6e-b78017e40307"
   podSecurityContext:
     seccompProfile:
       type: RuntimeDefault
@@ -97,4 +99,4 @@ microservice-chart:
         tag: "0.0.0"
     create: false
   azure:
-    workloadIdentityClientId: <workload-identity-client-id-set-automatically-by-gha>
+    workloadIdentityClientId: "6f3f33c2-8385-4b35-ac6e-b78017e40307"
