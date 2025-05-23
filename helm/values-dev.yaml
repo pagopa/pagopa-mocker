@@ -35,7 +35,7 @@ microservice-chart:
   serviceAccount:
     create: false
     annotations: {}
-    name: "shared-workload-identity"
+    name: "mock-workload-identity"
   podAnnotations: {}
   podSecurityContext:
     seccompProfile:

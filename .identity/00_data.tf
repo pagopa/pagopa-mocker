@@ -52,7 +52,7 @@ data "azurerm_key_vault_secret" "key_vault_integration_test_subkey" {
 }
 
 data "azurerm_user_assigned_identity" "workload_identity_clientid" {
-  name                = "shared-workload-identity"
+  name                = "mock-workload-identity"
   resource_group_name = local.aks_cluster.resource_group_name
 }
 
