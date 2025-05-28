@@ -2,8 +2,8 @@ apiVersion: v2
 name: pagopa-mocker
 description: Microservice that permits to dynamically generate mocked responses
 type: application
-version: 1.48.0
-appVersion: 1.3.2-4-PIDM-484-update-helm-chart
+version: 1.49.0
+appVersion: 1.3.2-5-PIDM-484-update-helm-chart
 dependencies:
   - name: microservice-chart
     version: 7.5.0
