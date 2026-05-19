@@ -4,6 +4,10 @@
 
 Spring Application that exposes a generic entry-point in order to dynamically manage mocked responses for pagoPA platform.
 
+> 📖 **[Guida Operativa](GUIDA_OPERATIVA.md)** — Documentazione completa su struttura dati, logica di matching, scripting e cache.
+>
+> 🔧 Il servizio di configurazione del Mocker è disponibile nel repo [pagopa-mocker-config](https://github.com/pagopa/pagopa-mocker-config) — vedi la [Guida Operativa Mocker Config](https://github.com/pagopa/pagopa-mocker-config/blob/docs/guida-operativa/GUIDA_OPERATIVA.md).
+
 - [pagoPa Mocker - Core](#pagopa-mocker---core)
     * [Technology Stack](#technology-stack)
     * [Start Project Locally 🚀](#start-project-locally---)
