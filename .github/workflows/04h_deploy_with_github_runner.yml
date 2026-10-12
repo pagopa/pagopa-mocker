@@ -7,6 +7,33 @@ on:
         required: true
         description: The name of the environment where to deploy
         type: string
+      helm_options:
+        default: ''
+        required: false
+        type: string
+        description: 'helm upgrade options'
+      terraform_options:
+        default: ''
+        required: false
+        type: string
+        description: 'terraform upgrade options'
+      branch:
+        required: false
+        default: ${{ github.ref_name }}
+        type: string
+      suffix_name:
+        required: false
+        default: ''
+        type: string
+      pr_number:
+        required: false
+        default: ''
+        type: string
+      uninstall:
+        description: 'true if you want to uninstall instead of install'
+        required: false
+        type: boolean
+        default: false
 
 env:
   NAMESPACE: mock
@@ -24,10 +51,11 @@ jobs:
     environment: ${{ inputs.environment }}
     steps:
       - name: Deploy
-        uses: pagopa/github-actions-template/aks-deploy@main
+        if: ${{ inputs.uninstall  == 'false' ||  inputs.uninstall  == false }}
+        uses: pagopa/github-actions-template/aks-deploy@8e05805024deadaacb52fc78c5a52293215841dc # main
         with:
-          branch: ${{ github.ref_name }}
-          client_id: ${{ secrets.CLIENT_ID }}
+          branch: ${{ inputs.branch }}
+          client_id: ${{ secrets.CD_CLIENT_ID }}
           subscription_id: ${{ secrets.SUBSCRIPTION_ID }}
           tenant_id: ${{ secrets.TENANT_ID }}
           env: ${{ inputs.environment }}
