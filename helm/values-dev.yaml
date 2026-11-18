@@ -62,6 +62,7 @@ microservice-chart:
           type: Utilization # Allowed types are 'Utilization' or 'AverageValue'
           value: "75"
   envConfig:
+    JAVA_TOOL_OPTIONS: "-XX:-UseBASE64Intrinsics -XX:UseAVX=2"
     WEBSITE_SITE_NAME: 'pagopamocker'
     OTEL_ENDPOINT: "http://otel-collector.elastic-system.svc.cluster.local:4317"
     ENV: 'aks-dev'
