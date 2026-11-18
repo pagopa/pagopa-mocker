@@ -61,6 +61,7 @@ microservice-chart:
         metadata:
           value: "75"
   envConfig:
+    JAVA_OPTS: "-XX:-UseBASE64Intrinsics"
     WEBSITE_SITE_NAME: 'pagopamocker'
     OTEL_ENDPOINT: "http://otel-collector.elastic-system.svc.cluster.local:4317"
     ENV: 'aks-dev'
